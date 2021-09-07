@@ -1,0 +1,9 @@
+Documentação sobre partições ESP32
+
+https://docs.platformio.org/en/latest/platforms/espressif32.html#partition-tables
+
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/partition-tables.html
+
+Partições pré-definidas
+
+https://github.com/espressif/arduino-esp32/tree/master/tools/partitions
