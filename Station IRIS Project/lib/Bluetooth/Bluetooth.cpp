@@ -1,7 +1,5 @@
 #include "Bluetooth.h"
 
-#define pinAnalog 26
-
 // VARIÁVEIS  
   // String's
   String packBT    = ""; // Buffer virtual, usado no callback
@@ -15,22 +13,22 @@
          PASSWORD_STR   = "";
 
   // Boolean's
-  bool connectedBT        = 0;  // Estado de conexÃ£o bluetooth, usado no callback
-  bool oldDeviceConnected = 0;  // Estado antigo de conexÃ£o bluetooth, usado no refreshConnectionBT()
-  bool fnConnect          = 1;  // FunÃ§Ã£o auxiliar para controle de escrita dos dados bluetooth na EEPROM
+  bool connectedBT        = 0;  // Estado de conexão bluetooth, usado no callback
+  bool oldDeviceConnected = 0;  // Estado antigo de conexão bluetooth, usado no refreshConnectionBT()
+  bool fnConnect          = 1;  // função auxiliar para controle de escrita dos dados bluetooth na EEPROM
   
   // Outros dados
   BLEServer* serverBT                  = NULL;  // Aloca server BT
-  BLECharacteristic* characteristic_TX = NULL;  // Aloca caracterÃ­stica BT_TX
-  BLECharacteristic* characteristic_RX = NULL;  // Aloca caracterÃ­stica BT_RX
-  uint32_t BT_rxData;                           // Aloca funÃ§Ã£o de recebimento no callback
+  BLECharacteristic* characteristic_TX = NULL;  // Aloca característica BT_TX
+  BLECharacteristic* characteristic_RX = NULL;  // Aloca característica BT_RX
+  uint32_t BT_rxData;                           // Aloca função de recebimento no callback
 
 
   // CALLBACK'S
   // Estado de conexão bluetooth
   class CallbackServer: public BLEServerCallbacks 
   {
-    void onConnect(BLEServer* serverBT) {connectedBT = 1;}  // Dispositivo conectado
+    void onConnect(BLEServer* serverBT) {connectedBT = 1;}      // Dispositivo conectado
     void onDisconnect(BLEServer* serverBT) {connectedBT = 0;}   // Dispositivo desconectado
   };
   
@@ -71,6 +69,8 @@ String randomize_ID_BT()
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 void setupBluetooth()
 {
+  pinMode (pinAnalog, INPUT);
+
   BLEDevice::init(randomize_ID_BT().c_str());
   
   // Cria server
@@ -79,13 +79,13 @@ void setupBluetooth()
   // Seta callback, para idenficar se o dispositivo estÃ¡ conectado
   serverBT->setCallbacks(new CallbackServer());
   
-  // Cria um serviÃ§o
+  // Cria um serviço
   BLEService* serviceBT = serverBT->createService(SERVICE_UUID);
 
-  // Cria uma caracteristica de serviÃ§o para TX
+  // Cria uma caracteristica de serviço para TX
   characteristic_TX = serviceBT->createCharacteristic(CHARACTERISTIC_UUID_TX, BLECharacteristic::PROPERTY_READ);   // Cria caracteristica TX
 
-  // Cria uma caracteristica de serviÃ§o para RX
+  // Cria uma caracteristica de serviço para RX
   characteristic_RX = serviceBT->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
   
   // Seta callback de recebimento
@@ -94,14 +94,14 @@ void setupBluetooth()
   // Adiciona um descritor RX
   characteristic_RX->addDescriptor(new BLE2902());
 
-  // Inicia serviÃ§o
+  // Inicia serviço
   serviceBT->start();
 
-  // Cria a propagaÃ§Ã£o do dispositivo no serviÃ§o "SERVICE_UUID" 
+  // Cria a propagação do dispositivo no serviço "SERVICE_UUID" 
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   
-  // Inicia propagaÃ§Ã£o do dispositivo
+  // Inicia propagação do dispositivo
   BLEDevice::startAdvertising();
 }
 
@@ -110,7 +110,7 @@ void setupBluetooth()
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 void waitingBT()   // Aguarda bluetooth conectar
 {
-  Serial.println ("Esperando conexÃ£o bluetooth...");
+  Serial.println ("Esperando conexão bluetooth...");
   while (!connectedBT)
   {
     Serial.print (".");
@@ -122,10 +122,10 @@ void waitingBT()   // Aguarda bluetooth conectar
 
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void waitingSYNC()  // Aguarda sincronizaÃ§Ã£o da comunicaÃ§Ã£o
+void waitingSYNC()  // Aguarda sincronização da comunicação
 {
   String sync = "";
-  Serial.println ("Aguardando sincronizaÃ§Ã£o...");
+  Serial.println ("Aguardando sincronização...");
   while (sync != "@")
   {
     refreshConnectionBT();
@@ -137,20 +137,20 @@ void waitingSYNC()  // Aguarda sincronizaÃ§Ã£o da comunicaÃ§Ã£o
 
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void waitingREQUEST()  // Aguarda requisiÃ§Ã£o do clientAPP
+void waitingREQUEST()  // Aguarda requisição do clientAPP
 {
   do{
      refreshConnectionBT();
-     if (connectedBT)Serial.println ("Esperando requisiÃ§Ã£o...");
+     if (connectedBT)Serial.println ("Esperando requisição...");
      delay (250);
   }while (!getRequestBT());
-  Serial.println ("RequisiÃ§Ã£o aceita: " + String(getRequestBT())); 
+  Serial.println ("Requisição aceita: " + String(getRequestBT())); 
   delay (1000);
 }
 
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void sendREQUEST()  // Envia requisiÃ§Ã£o para clientAPP
+void sendREQUEST()  // Envia requisição para clientAPP
 {
   Serial.println ("Enviando request...");
   packBT = "";    // Limpeza do buffer
@@ -177,7 +177,7 @@ void writeBT(String dados)
 
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-String getData()        // FunÃ§Ã£o de leitura conjunta com callback
+String getData()        // Função de leitura conjunta com callback
 { 
   packBT = "";     
   while (1)
@@ -209,7 +209,7 @@ bool getRequestBT()
         }
         else if (packBT != requestClientAppBT) 
         {
-          //resetModule();
+          resetModule();
           packBT = "";
           return 0;
         }
@@ -223,7 +223,7 @@ bool getRequestBT()
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 void refreshConnectionBT()
 {
-  // Atualiza conexÃ£o -> desconectado
+  // Atualiza conexão -> desconectado
   if (!connectedBT && oldDeviceConnected) 
   {
     Serial.println ("Bluetooth desconectado!");
@@ -233,7 +233,7 @@ void refreshConnectionBT()
     oldDeviceConnected = connectedBT;
   }
     
-  // Atualiza conexÃ£o -> conectado
+  // Atualiza conexão -> conectado
   if (connectedBT && !oldDeviceConnected) 
   {
     Serial.println ("Bluetooth conectado!");
@@ -245,12 +245,12 @@ void refreshConnectionBT()
 
 void bluetoothConfig()
 {
-  // ConfiguraÃ§Ãµes do bluetooth
+  // Configurações do bluetooth
   
-  // Espera conexÃ£o com clientAPP
+  // Espera conexão com clientAPP
   waitingBT();            
 
-  // Espera sincronizaÃ§Ã£o do clientAPP
+  // Espera sincronização do clientAPP
   waitingSYNC();          
 
   // Envia request para o clientAPP
@@ -259,5 +259,5 @@ void bluetoothConfig()
   // Espera para receber o request do clientAPP
   waitingREQUEST(); 
   
-  //  Fim das configuraÃ§Ãµes bluetooth
+  //  Fim das configurações bluetooth
 }

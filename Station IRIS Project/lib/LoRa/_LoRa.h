@@ -3,14 +3,15 @@
 
 //Inclusões
 #include <Arduino.h>
+#include <FreeRTOS.h>
 #include <SPI.h>
 #include <LoRa.h>
 
-// LoRa defines
-#define INTERVAL 2205 // 2000 + 205ms para compensar o delay de processamento do Gateway
+/*----------------------------------------------------------------------------------------------*/
+// LoRa Config.
+#define INTERVAL 2000 // 2000 + 205ms para compensar o delay de processamento do Gateway
 #define BAND 433E6    // Frequencia 433MHz
-
-// LoRa pinout
+// Pinout
 #define SCK 5
 #define MISO 19
 #define MOSI 27

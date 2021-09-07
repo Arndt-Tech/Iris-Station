@@ -11,15 +11,19 @@
 #include "esp_err.h"
 #include "esp_gap_bt_api.h"
 #include "esp_bt_main.h"
+#include "specFunctions.h"
 
-// ID's de serviço e características BT
-#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID_TX "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID_RX "808ccec4-d862-11eb-b8bc-0242ac130003"
+// ID's
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"             // ID serviço
+#define CHARACTERISTIC_UUID_TX "beb5483e-36e1-4688-b7f5-ea07361b26a8"   // ID de característica TX 
+#define CHARACTERISTIC_UUID_RX "808ccec4-d862-11eb-b8bc-0242ac130003"   // ID de característica RX 
 
 // Senhas para protocolo de segurança
 #define requestClientAppBT "tSdcxhoLVYj7oMT500&5"  // Recebe do app
 #define passwordClientAppBT "KQ.?2qf01X|,JZRq8!}," // Envia para o app
+
+// Pino de leitura analógica
+#define pinAnalog 26
 
 // Funções
 // Setup

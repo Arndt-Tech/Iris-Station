@@ -20,6 +20,17 @@ void waitingStart()
   display.clear();
   display.setFont(ArialMT_Plain_16);
   display.setTextAlignment(TEXT_ALIGN_CENTER);
-  display.drawString(64, 22, "Waiting...");
+  display.drawString(64, 12, "Waiting");
+  display.drawString(64, 32, "Connection...");
+  display.display();
+}
+
+void BLE_OK()
+{
+  display.clear();
+  display.setFont(ArialMT_Plain_16);
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.drawString(64, 12, "Successfully");
+  display.drawString(64, 32, "Connected!");
   display.display();
 }
