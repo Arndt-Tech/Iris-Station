@@ -16,7 +16,7 @@ void setup()
 
   setupBluetooth();
   bluetoothConfig();
-  
+
   BLE_OK();
 
   setupLoRa();
