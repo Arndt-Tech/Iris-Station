@@ -58,7 +58,7 @@ Segue um código de exemplo mostrando mais detalhes sobre os procedimentos de co
 Para que o processo de requisição funcione corretamente, foram definidas as seguintes senhas:
 |          SENHA            |       DESCRIÇÃO       |
 |---------------------------|-----------------------|
-|   hHo}8j<S$(:$mTQW8W#l    |     Recebe do app     |
+|   hHo}8j<Sf(:4mTQW8W#l    |     Recebe do app     |
 |   &i((3,iH0,+-z[i]PpAh    |    Envia para o app   |
 > Tabela 1.
 -------------------------------------------------------------------------------
