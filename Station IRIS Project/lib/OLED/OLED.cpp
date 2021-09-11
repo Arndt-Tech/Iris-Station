@@ -19,7 +19,7 @@ void setupOLED()
   display.setFont(Dialog_plain_12);
   display.drawString(64, 41, "IRIS");
   display.display();
-  delay (5000);
+  delay(5000);
 }
 
 void dataBar(int temperature, String icon, float lora_sig)
@@ -39,12 +39,11 @@ void dataBar(int temperature, String icon, float lora_sig)
     display.setFont(Dialog_plain_12);
     display.drawString(0, 4, String(temperature) + "°C");
   }
-  
+
   // Ícone de tempo
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Meteocons_Regular_18);
   display.drawString(128, 0, icon);
-
 
   // Força sinal LoRa
   if (lora_sig >= -35)

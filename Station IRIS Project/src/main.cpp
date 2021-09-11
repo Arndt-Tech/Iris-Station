@@ -18,6 +18,7 @@ void setup()
 
   setupBluetooth();
   bluetoothConfig();
+  getID();
 
   setupLoRa();
 
