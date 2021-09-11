@@ -11,7 +11,7 @@
 void setup()
 {
   configBegin();
-  
+
   setupOLED();
   Serial.println(getChipID());
   dataBar(-3, "7", LoRa.packetRssi());
@@ -27,5 +27,4 @@ void setup()
 
 void loop()
 {
-  
 }
