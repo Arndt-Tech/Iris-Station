@@ -6,6 +6,12 @@
 #include <FreeRTOS.h>
 #include <Wire.h>
 #include <SSD1306.h>
+#include "fonts.h"
+#include "images.h"
+#include "icons.h"
+
+// Arquivos com funções para printar
+#include "ChipID.h"
 
 // OLED pinout
 #define OLED_SCL 15
@@ -14,7 +20,7 @@
 
 // Funções
 void setupOLED();
-void waitingStart();
+void dataBar(int temperature, String icon, float lora_sig);
 void BLE_OK();
 
 #endif

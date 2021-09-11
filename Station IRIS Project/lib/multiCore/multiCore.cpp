@@ -1,12 +1,12 @@
 // Inclusões
 #include "multiCore.h"
+unsigned long tLoRaSend = 0;
 
 // Funções
 void taskLoRa(void *pvParameters) // Nucleo 0, falta adicionar semaforo binario.
 {
   while (1)
   {
-    unsigned long tLoRaSend = 0;
     if ((xTaskGetTickCount() - tLoRaSend) > INTERVAL)
     {
       send_LoRa_Message("");

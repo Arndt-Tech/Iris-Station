@@ -2,8 +2,8 @@
 #include "_LoRa.h"
 
 // Variáveis
-char localAddress = 0xBB; // Endereço local
-char comLine = 0xFF;      // Endereço da destino
+char localAddr = 0xBB; // Endereço local
+char destAddr  = 0xFF; // Endereço da destino
 int requisitor;
 char sender;
 char incomingLength;
@@ -26,7 +26,7 @@ void setupLoRa()
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 void runningLoRa()
 {
-  unsigned long tLoRaSend = 0;
+  static unsigned long tLoRaSend = 0;
   if ((millis() - tLoRaSend) > INTERVAL)
   {
     send_LoRa_Message("");
@@ -39,8 +39,8 @@ void runningLoRa()
 void send_LoRa_Message(String dados)
 {
   LoRa.beginPacket();
-  LoRa.write(comLine);
-  LoRa.write(localAddress);
+  LoRa.write(destAddr);
+  LoRa.write(localAddr);
   LoRa.write(dados.length());
   LoRa.print(dados);
   LoRa.endPacket();
@@ -66,9 +66,8 @@ void receive_LoRa_Message(int packetSize)
     erros++;
     return;
   }
-  if (requisitor != localAddress && requisitor != comLine)
+  if (requisitor != localAddr && requisitor != destAddr)
     return; // Pacote ignorado
-
   /*
   Serial.println("Recebido de: 0x" + String(sender, HEX));
   Serial.println("Enviado para: 0x" + String(requisitor, HEX));

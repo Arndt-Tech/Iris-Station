@@ -7,10 +7,8 @@
   String auxPackBT = ""; // Auxiliares no callback
   
   // ID's
-  String USER_ID_STR    = "",
-         STATION_ID_STR = "",
-         SSID_STR       = "",
-         PASSWORD_STR   = "";
+  String GATEWAY_ID = "",
+         STATION_ID = "";
 
   // Boolean's
   bool connectedBT        = 0;  // Estado de conexão bluetooth, usado no callback
@@ -141,7 +139,7 @@ void waitingREQUEST()  // Aguarda requisição do clientAPP
 {
   do{
      refreshConnectionBT();
-     if (connectedBT)Serial.println ("Esperando requisição...");
+     if (connectedBT)Serial.println ("Esperando requisição... ");
      delay (250);
   }while (!getRequestBT());
   Serial.println ("Requisição aceita: " + String(getRequestBT())); 
@@ -160,7 +158,7 @@ void sendREQUEST()  // Envia requisição para clientAPP
 
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void writeBT(String dados)
+String writeBT(String dados)
 {
   unsigned long timeBT = 0;
   if (connectedBT)
@@ -171,6 +169,7 @@ void writeBT(String dados)
       characteristic_TX->notify();
       timeBT = millis();
     }
+    return dados;
   }
 }
 
@@ -207,9 +206,9 @@ bool getRequestBT()
           writeBT ("#");
           return 1;
         }
-        else if (packBT != requestClientAppBT) 
+        else  
         {
-          resetModule();
+          ESP.restart();
           packBT = "";
           return 0;
         }
@@ -260,4 +259,12 @@ void bluetoothConfig()
   waitingREQUEST(); 
   
   //  Fim das configurações bluetooth
+}
+
+void getID()
+{
+  writeBT("|");
+  GATEWAY_ID = getData();
+  STATION_ID = writeBT(String (getChipID()));
+  Serial.println ("Chip ID: " + STATION_ID);
 }

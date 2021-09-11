@@ -6,18 +6,18 @@
 #include "_LoRa.h"
 #include "multiCore.h"
 #include "specFunctions.h"
+#include "ChipID.h"
 
 void setup()
 {
   configBegin();
-
+  
   setupOLED();
-  waitingStart();
+  Serial.println(getChipID());
+  dataBar(-3, "7", LoRa.packetRssi());
 
   setupBluetooth();
   bluetoothConfig();
-
-  BLE_OK();
 
   setupLoRa();
 
@@ -26,4 +26,5 @@ void setup()
 
 void loop()
 {
+  
 }
