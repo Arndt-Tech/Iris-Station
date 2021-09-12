@@ -19,10 +19,19 @@
 #define RST 14
 #define DI00 26
 
+// Struct's
+typedef struct _lora
+{
+  uint32_t localAddr;
+  uint32_t destAddr;
+  int packSize;
+  String incomingPack;
+} lora_com;
+
 // Funções
-void setupLoRa();
-void runningLoRa();
-void send_LoRa_Message(String dados);
-void receive_LoRa_Message(int packetSize);
+void setupLoRa(lora_com *gtw);
+void runningLoRa(lora_com *gtw);
+void send_LoRa_Message(String dados, lora_com *gtw);
+void receive_LoRa_Message(lora_com *gtw);
 
 #endif

@@ -11,8 +11,9 @@
 #include "esp_err.h"
 #include "esp_gap_bt_api.h"
 #include "esp_bt_main.h"
-#include "specFunctions.h"  
+#include "specFunctions.h"
 #include "ChipID.h"
+#include "_LoRa.h"
 
 // ID's
 #define SERVICE_UUID "32454db8-1322-11ec-82a8-0242ac130003"           // ID serviço
@@ -49,6 +50,6 @@ bool getRequestBT();   // Recebe requisição com callback
 void sendREQUEST();    // Envia requisição para clientAPP
 
 // Procedures
-void getID();
+void getID(lora_com *gtw);
 
 #endif

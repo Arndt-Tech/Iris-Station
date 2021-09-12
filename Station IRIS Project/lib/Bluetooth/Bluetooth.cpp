@@ -1,14 +1,10 @@
 #include "Bluetooth.h"
 
-// VARIÁVEIS
+// Variables
 // String's
 String packBT = "";    // Buffer virtual, usado no callback
 String oldPackBT = ""; // Auxiliares no callback
 String auxPackBT = ""; // Auxiliares no callback
-
-// ID's
-String GATEWAY_ID = "",
-       STATION_ID = "";
 
 // Boolean's
 bool connectedBT = 0;        // Estado de conexão bluetooth, usado no callback
@@ -21,7 +17,7 @@ BLECharacteristic *characteristic_TX = NULL; // Aloca característica BT_TX
 BLECharacteristic *characteristic_RX = NULL; // Aloca característica BT_RX
 uint32_t BT_rxData;                          // Aloca função de recebimento no callback
 
-// CALLBACK'S
+// Callback's
 // Estado de conexão bluetooth
 class CallbackServer : public BLEServerCallbacks
 {
@@ -71,7 +67,7 @@ void setupBluetooth()
   // Cria server
   serverBT = BLEDevice::createServer();
 
-  // Seta callback, para idenficar se o dispositivo estÃ¡ conectado
+  // Seta callback, para idenficar se o dispositivo está conectado
   serverBT->setCallbacks(new CallbackServer());
 
   // Cria um serviço
@@ -162,6 +158,8 @@ String writeBT(String dados)
     }
     return dados;
   }
+  else
+    return "";
 }
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
@@ -245,12 +243,12 @@ void bluetoothConfig()
   //  Fim das configurações bluetooth
 }
 
-void getID()
+void getID(lora_com *gtw)
 {
   writeBT("|");
-  GATEWAY_ID = getData();
-  STATION_ID = writeBT(String(getChipID()));
-  Serial.println("Chip ID: " + STATION_ID);
+  gtw->destAddr = atol(getData().c_str());
+  gtw->localAddr = atol(writeBT(String(getChipID())).c_str());
+  Serial.println("Chip ID: " + String(gtw->localAddr));
   delay(1000);
   writeBT("&");
 }

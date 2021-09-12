@@ -1,73 +1,75 @@
 // Inclusões
 #include "_LoRa.h"
 
-// Variáveis
-char localAddr = 0xBB; // Endereço local
-char destAddr  = 0xFF; // Endereço da destino
-int requisitor;
-char sender;
-char incomingLength;
-String incoming = "";
+// Variáveis externas
 int erros, pacotes, enviados;
 
-void setupLoRa()
+void setupLoRa(lora_com *gtw)
 {
   SPI.begin(SCK, MISO, MOSI, SS);
   LoRa.setPins(SS, RST, DI00);
   if (!LoRa.begin(BAND))
   {
     Serial.println("Erro ao inicializar LoRa!");
-    while (1)
-      ;
+    while (1);
   }
+  gtw->packSize = 0;
+  gtw->incomingPack = "";
   LoRa.enableCrc();
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void runningLoRa()
+void runningLoRa(lora_com *gtw)
 {
   static unsigned long tLoRaSend = 0;
   if ((millis() - tLoRaSend) > INTERVAL)
   {
-    send_LoRa_Message("");
+    send_LoRa_Message("", gtw);
     tLoRaSend = millis();
   }
-  receive_LoRa_Message(LoRa.parsePacket());
+  gtw->packSize = LoRa.parsePacket();
+  receive_LoRa_Message(gtw);
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void send_LoRa_Message(String dados)
+void send_LoRa_Message(String dados, lora_com *gtw)
 {
   LoRa.beginPacket();
-  LoRa.write(destAddr);
-  LoRa.write(localAddr);
+  LoRa.write(gtw->destAddr);
+  LoRa.write(gtw->localAddr);
   LoRa.write(dados.length());
   LoRa.print(dados);
   LoRa.endPacket();
+  gtw->packSize = dados.length();
   enviados++;
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void receive_LoRa_Message(int packetSize)
+void receive_LoRa_Message(lora_com *gtw)
 {
-  if (packetSize == 0)
+  if (gtw->packSize == 0)
     return;
+  int to_who_addr = 0;
+  char sender_addr = 0;
+  char incomingLength = 0;
+  gtw->incomingPack = "";
   pacotes++;
   // Bytes de protocolo
-  requisitor = LoRa.read();
-  sender = LoRa.read();
+  to_who_addr = LoRa.read();
+  sender_addr = LoRa.read();
   incomingLength = LoRa.read();
-  incoming = "";
-  // Concatenação dos dados na string "incoming"
+  // Concatenação dos dados na string "incomingPack"
   while (LoRa.available())
-    incoming += (char)LoRa.read();
-  if (incomingLength != incoming.length())
+    gtw->incomingPack += (char)LoRa.read();
+  if (incomingLength != gtw->incomingPack.length())
   {
-    erros++;
+    erros++; 
     return;
   }
-  if (requisitor != localAddr && requisitor != destAddr)
+  if (to_who_addr != gtw->localAddr || sender_addr != gtw->destAddr)
     return; // Pacote ignorado
+  
+  
   /*
   Serial.println("Recebido de: 0x" + String(sender, HEX));
   Serial.println("Enviado para: 0x" + String(requisitor, HEX));

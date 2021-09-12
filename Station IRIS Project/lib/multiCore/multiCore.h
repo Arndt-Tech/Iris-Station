@@ -6,6 +6,10 @@
 #include <FreeRTOS.h>
 #include "_LoRa.h"
 
+// Struct's externas
+extern lora_com gateway;
+
+// Funções
 void taskLoRa (void *pvParameters);
 
 #endif

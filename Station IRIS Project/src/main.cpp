@@ -8,19 +8,21 @@
 #include "specFunctions.h"
 #include "ChipID.h"
 
+lora_com gateway;
+
 void setup()
 {
   configBegin();
-
+  
   setupOLED();
   Serial.println(getChipID());
   dataBar(-3, "7", LoRa.packetRssi());
-
+  
   setupBluetooth();
   bluetoothConfig();
-  getID();
+  getID(&gateway);
 
-  setupLoRa();
+  setupLoRa(&gateway);
 
   xTaskCreatePinnedToCore(taskLoRa, "taskLora", 10000, NULL, 3, NULL, 0);
 }
