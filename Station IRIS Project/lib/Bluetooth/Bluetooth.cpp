@@ -94,6 +94,8 @@ void setupBluetooth()
 
   // Inicia propagação do dispositivo
   BLEDevice::startAdvertising();
+
+  bluetoothConfig();
 }
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|

@@ -32,6 +32,6 @@ typedef struct _lora
 void setupLoRa(lora_com *gtw);
 void runningLoRa(lora_com *gtw);
 void send_LoRa_Message(String dados, lora_com *gtw);
-void receive_LoRa_Message(lora_com *gtw);
+String receive_LoRa_Message(lora_com *gtw);
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <FreeRTOS.h>
+#include "_EEPROM.h"
 
 void configBegin();
 

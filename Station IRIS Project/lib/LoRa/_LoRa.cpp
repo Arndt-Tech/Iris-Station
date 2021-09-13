@@ -45,10 +45,10 @@ void send_LoRa_Message(String dados, lora_com *gtw)
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void receive_LoRa_Message(lora_com *gtw)
+String receive_LoRa_Message(lora_com *gtw)
 {
   if (gtw->packSize == 0)
-    return;
+    return "";
   int to_who_addr = 0;
   char sender_addr = 0;
   char incomingLength = 0;
@@ -64,12 +64,13 @@ void receive_LoRa_Message(lora_com *gtw)
   if (incomingLength != gtw->incomingPack.length())
   {
     erros++; 
-    return;
+    return ""; // Pacote incosistente 
   }
   if (to_who_addr != gtw->localAddr || sender_addr != gtw->destAddr)
-    return; // Pacote ignorado
-  
-  
+    return ""; // Pacote ignorado
+  return gtw->incomingPack;
+}
+
   /*
   Serial.println("Recebido de: 0x" + String(sender, HEX));
   Serial.println("Enviado para: 0x" + String(requisitor, HEX));
@@ -79,4 +80,3 @@ void receive_LoRa_Message(lora_com *gtw)
   Serial.println("Ruido: " + String(LoRa.packetSnr()));
   Serial.println();
   */
-}

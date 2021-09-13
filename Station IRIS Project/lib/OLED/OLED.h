@@ -19,9 +19,12 @@
 #define OLED_SDA 4
 #define OLED_RST 16
 
+// Struct's externas
+extern lora_com gateway;
+
 // Funções
 void setupOLED();
 void dataBar(int temperature, String icon, float lora_sig);
-void BLE_OK();
+void runnigSystem(lora_com *gtw);
 
 #endif

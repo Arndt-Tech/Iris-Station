@@ -3,7 +3,7 @@
 // Instâncias
 SSD1306 display(0x3c, OLED_SDA, OLED_SCL);
 
-// Desenvolvimento de funções
+// Funções
 void setupOLED()
 {
   pinMode(OLED_RST, OUTPUT);
@@ -19,7 +19,7 @@ void setupOLED()
   display.setFont(Dialog_plain_12);
   display.drawString(64, 41, "IRIS");
   display.display();
-  delay(5000);
+  delay(3000);
 }
 
 void dataBar(int temperature, String icon, float lora_sig)
@@ -45,26 +45,30 @@ void dataBar(int temperature, String icon, float lora_sig)
   display.setFont(Meteocons_Regular_18);
   display.drawString(128, 0, icon);
 
+  // dBM
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(Dialog_plain_12);
+  display.drawString(0, 64, String(lora_sig));
+
   // Força sinal LoRa
   if (lora_sig >= -35)
     display.drawIco16x16(88, 0, lora_str_signal, false);
-  else if (lora_sig < -35 && lora_sig >= -80)
+  else if (lora_sig < -30 && lora_sig >= -60)
     display.drawIco16x16(88, 0, lora_mid_signal, false);
-  else if (lora_sig < -80 && lora_sig >= -130)
+  else if (lora_sig < -60 && lora_sig >= -120)
     display.drawIco16x16(88, 0, lora_low_signal, false);
-  else if (lora_sig < -130 || lora_sig == 0)
+  else if (lora_sig < -120 || lora_sig == -164)
     display.drawIco16x16(88, 0, lora_not_signal, false);
 
   display.drawHorizontalLine(0, 21, 128);
-  display.display();
+  //display.display();
 }
 
-void BLE_OK()
+void runnigSystem(lora_com *gtw)
 {
-  display.clear();
-  display.setFont(ArialMT_Plain_16);
-  display.setTextAlignment(TEXT_ALIGN_CENTER);
-  display.drawString(64, 12, "Successfully");
-  display.drawString(64, 32, "Connected!");
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(Dialog_plain_12);
+  display.drawString(0, 25, "Gateway: " + String(gtw->destAddr));
+  display.drawString(0, 45, "Local: " + String(gtw->localAddr));
   display.display();
 }
