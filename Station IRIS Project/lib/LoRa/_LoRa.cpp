@@ -4,7 +4,7 @@
 // Variáveis externas
 int erros, pacotes, enviados;
 
-void setupLoRa(lora_com *gtw)
+void setupLoRa(networkLora *gtw)
 {
   SPI.begin(SCK, MISO, MOSI, SS);
   LoRa.setPins(SS, RST, DI00);
@@ -19,7 +19,7 @@ void setupLoRa(lora_com *gtw)
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void runningLoRa(lora_com *gtw)
+void runningLoRa(networkLora *gtw)
 {
   static unsigned long tLoRaSend = 0;
   if ((millis() - tLoRaSend) > INTERVAL)
@@ -32,7 +32,7 @@ void runningLoRa(lora_com *gtw)
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void send_LoRa_Message(String dados, lora_com *gtw)
+void send_LoRa_Message(String dados, networkLora *gtw)
 {
   LoRa.beginPacket();
   LoRa.write(gtw->destAddr);
@@ -45,7 +45,7 @@ void send_LoRa_Message(String dados, lora_com *gtw)
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-String receive_LoRa_Message(lora_com *gtw)
+String receive_LoRa_Message(networkLora *gtw)
 {
   if (gtw->packSize == 0)
     return "";

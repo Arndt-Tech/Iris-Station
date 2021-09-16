@@ -10,6 +10,8 @@
             "includePath": [
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/include",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/src",
+                "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/generalTasks",
+                "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/DHT",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/OLED",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/multiCore",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/configBegin",
@@ -19,6 +21,8 @@
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/LoRa",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/specialFunctions",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/ChipID",
+                "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/DHT sensor library",
+                "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/Adafruit Unified Sensor",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/LoRa/src",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/ESP32 BLE Arduino/src",
                 "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/ESP8266 and ESP32 OLED driver for SSD1306 displays/src",
@@ -119,6 +123,8 @@
                 "path": [
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/include",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/src",
+                    "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/generalTasks",
+                    "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/DHT",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/OLED",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/multiCore",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/configBegin",
@@ -128,6 +134,8 @@
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/LoRa",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/specialFunctions",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/lib/ChipID",
+                    "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/DHT sensor library",
+                    "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/Adafruit Unified Sensor",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/LoRa/src",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/ESP32 BLE Arduino/src",
                     "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/libdeps/heltec_wifi_lora_32_V2/ESP8266 and ESP32 OLED driver for SSD1306 displays/src",
@@ -225,7 +233,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=50101",
+                "PLATFORMIO=50200",
                 "ARDUINO_HELTEC_WIFI_LORA_32_V2",
                 "ESP32",
                 "ESP_PLATFORM",

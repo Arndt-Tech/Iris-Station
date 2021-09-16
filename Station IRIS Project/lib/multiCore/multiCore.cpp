@@ -19,3 +19,5 @@ void taskLoRa(void *pvParameters) // Nucleo 0, falta adicionar semaforo binario.
     vTaskDelay(1);
   }
 }
+
+void setupMultiCore(BaseType_t core) { xTaskCreatePinnedToCore(taskLoRa, "taskLora", 10000, NULL, 3, NULL, core); }

@@ -26,12 +26,14 @@ typedef struct _lora
   uint32_t destAddr;
   int packSize;
   String incomingPack;
-} lora_com;
+  int signal;
+  int noise;
+} networkLora;
 
 // Funções
-void setupLoRa(lora_com *gtw);
-void runningLoRa(lora_com *gtw);
-void send_LoRa_Message(String dados, lora_com *gtw);
-String receive_LoRa_Message(lora_com *gtw);
+void setupLoRa(networkLora *gtw);
+void runningLoRa(networkLora *gtw);
+void send_LoRa_Message(String dados, networkLora *gtw);
+String receive_LoRa_Message(networkLora *gtw);
 
 #endif

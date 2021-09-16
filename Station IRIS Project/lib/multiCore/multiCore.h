@@ -7,9 +7,10 @@
 #include "_LoRa.h"
 
 // Struct's externas
-extern lora_com gateway;
+extern networkLora gateway;
 
 // Funções
 void taskLoRa (void *pvParameters);
+void setupMultiCore(BaseType_t core);
 
 #endif

@@ -245,7 +245,7 @@ void bluetoothConfig()
   //  Fim das configurações bluetooth
 }
 
-void getID(lora_com *gtw)
+void getID(networkLora *gtw)
 {
   writeBT("|");
   gtw->destAddr = atol(getData().c_str());

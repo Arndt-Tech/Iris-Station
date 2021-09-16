@@ -25,7 +25,7 @@
 #define passwordClientAppBT "&i((3,iH0,+-z[i]PpAh" // Envia para o app
 
 // Pino de leitura analógica
-#define pinAnalog 26
+#define pinAnalog 36
 
 // Funções
 // Setup
@@ -50,6 +50,6 @@ bool getRequestBT();   // Recebe requisição com callback
 void sendREQUEST();    // Envia requisição para clientAPP
 
 // Procedures
-void getID(lora_com *gtw);
+void getID(networkLora *gtw);
 
 #endif

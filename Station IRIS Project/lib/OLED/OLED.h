@@ -13,18 +13,16 @@
 // Arquivos com funções para printar
 #include "ChipID.h"
 #include "_LoRa.h"
+#include "_DHT.h"
 
 // OLED pinout
 #define OLED_SCL 15
 #define OLED_SDA 4
 #define OLED_RST 16
 
-// Struct's externas
-extern lora_com gateway;
-
 // Funções
 void setupOLED();
-void dataBar(int temperature, String icon, float lora_sig);
-void runnigSystem(lora_com *gtw);
+void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool clear);
+void runnigSystem(networkLora *gtw, bool commit, bool clear);
 
 #endif
