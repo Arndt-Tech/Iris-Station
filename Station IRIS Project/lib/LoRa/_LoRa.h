@@ -35,5 +35,6 @@ void setupLoRa(networkLora *gtw);
 void runningLoRa(networkLora *gtw);
 void send_LoRa_Message(String dados, networkLora *gtw);
 String receive_LoRa_Message(networkLora *gtw);
+uint32_t asm_addr(uint8_t *addr);
 
 #endif

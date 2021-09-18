@@ -12,8 +12,6 @@ bool readDHT(Sensor *temp)
   {
     temp->temperature = dht.readTemperature();
     temp->humidity = dht.readHumidity();
-    Serial.println(temp->temperature);
-    Serial.println(temp->humidity);
     tempoLeituraDHT = millis();
   }
   if (isnan(temp->humidity) || isnan(temp->temperature))

@@ -51,16 +51,13 @@ void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool cle
   display.drawString(0, 64, String(lora->signal));
 
   // Força sinal LoRa
-  if (LoRa.available())
-  {
-    if (lora->signal >= -30)
-      display.drawIco16x16(88, 0, lora_str_signal, false);
-    else if (lora->signal < -30 && lora->signal >= -60)
-      display.drawIco16x16(88, 0, lora_mid_signal, false);
-    else if (lora->signal < -60 && lora->signal >= -120)
-      display.drawIco16x16(88, 0, lora_low_signal, false);
-  }
-  else if (!LoRa.available() || lora->signal < -120)
+  if (lora->signal >= -35)
+    display.drawIco16x16(88, 0, lora_str_signal, false);
+  else if (lora->signal < -35 && lora->signal >= -60)
+    display.drawIco16x16(88, 0, lora_mid_signal, false);
+  else if (lora->signal < -60 && lora->signal >= -120)
+    display.drawIco16x16(88, 0, lora_low_signal, false);
+  else if (lora->signal < -120)
     display.drawIco16x16(88, 0, lora_not_signal, false);
 
   display.drawHorizontalLine(0, 21, 128);

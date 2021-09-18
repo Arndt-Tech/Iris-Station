@@ -32,15 +32,26 @@ void runningLoRa(networkLora *gtw)
 }
 
 // -|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-void send_LoRa_Message(String dados, networkLora *gtw)
+void send_LoRa_Message(String pack, networkLora *gtw)
 {
   LoRa.beginPacket();
+
   LoRa.write(gtw->destAddr);
+  LoRa.write(gtw->destAddr >> 8 & 0xFF);
+  LoRa.write(gtw->destAddr >> 16 & 0xFF);
+  LoRa.write(gtw->destAddr >> 24 & 0xFF);
+
   LoRa.write(gtw->localAddr);
-  LoRa.write(dados.length());
-  LoRa.print(dados);
+  LoRa.write(gtw->localAddr >> 8 & 0xFF);
+  LoRa.write(gtw->localAddr >> 16 & 0xFF);
+  LoRa.write(gtw->localAddr >> 24 & 0xFF);
+
+  LoRa.write(pack.length());
+  LoRa.print(pack);
+
   LoRa.endPacket();
-  gtw->packSize = dados.length();
+
+  gtw->packSize = pack.length();
   enviados++;
 }
 
@@ -49,24 +60,24 @@ String receive_LoRa_Message(networkLora *gtw)
 {
   if (gtw->packSize == 0)
     return "";
-  int to_who_addr = 0;
-  char sender_addr = 0;
-  char incomingLength = 0;
+  uint8_t to_who_addr[4] = {0};
+  uint8_t sender_addr[4] = {0};
+  uint16_t incomingLength = 0;
   gtw->incomingPack = "";
   pacotes++;
-  // Bytes de protocolo
-  to_who_addr = LoRa.read();
-  sender_addr = LoRa.read();
+  for (register int i = 0; i < 4; i++)
+    to_who_addr[i] = LoRa.read();
+  for (register int i = 0; i < 4; i++)
+    sender_addr[i] = LoRa.read();
   incomingLength = LoRa.read();
-  // Concatenação dos dados na string "incomingPack"
   while (LoRa.available())
     gtw->incomingPack += (char)LoRa.read();
   if (incomingLength != gtw->incomingPack.length())
   {
-    erros++; 
-    return ""; // Pacote incosistente 
+    erros++;
+    return ""; // Pacote incosistente
   }
-  if (to_who_addr != gtw->localAddr || sender_addr != gtw->destAddr)
+  if (asm_addr(to_who_addr) != gtw->localAddr || asm_addr(sender_addr) != gtw->destAddr)
     return ""; // Pacote ignorado
   return gtw->incomingPack;
 }
@@ -80,3 +91,13 @@ String receive_LoRa_Message(networkLora *gtw)
   Serial.println("Ruido: " + String(LoRa.packetSnr()));
   Serial.println();
   */
+
+uint32_t asm_addr(uint8_t *addr)
+{
+  uint32_t newAddr;
+  newAddr |= addr[0];
+  newAddr |= addr[1] << 8;
+  newAddr |= addr[2] << 16;
+  newAddr |= addr[3] << 24;
+  return newAddr;
+}
