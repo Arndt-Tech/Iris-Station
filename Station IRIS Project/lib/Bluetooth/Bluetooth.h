@@ -15,6 +15,9 @@
 #include "ChipID.h"
 #include "_LoRa.h"
 
+// Geral
+#define BT_NAME "IRIStation"
+
 // ID's
 #define SERVICE_UUID "32454db8-1322-11ec-82a8-0242ac130003"           // ID serviço
 #define CHARACTERISTIC_UUID_TX "beb5483e-36e1-4688-b7f5-ea07361b26a8" // ID de característica TX

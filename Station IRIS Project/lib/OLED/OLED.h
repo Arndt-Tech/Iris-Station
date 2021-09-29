@@ -13,9 +13,10 @@
 // Arquivos com funções para printar
 #include "ChipID.h"
 #include "_LoRa.h"
-#include "_DHT.h"
+#include "GPIO.h"
 
 // OLED pinout
+
 #define OLED_SCL 15
 #define OLED_SDA 4
 #define OLED_RST 16

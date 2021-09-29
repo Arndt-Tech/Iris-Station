@@ -54,7 +54,7 @@ class CallbackRX : public BLECharacteristicCallbacks
 String randomize_ID_BT()
 {
   randomSeed(analogRead(pinAnalog));
-  return String("IRIStation - " + String(random(9999), DEC));
+  return String(BT_NAME " - " + String(random(9999), DEC));
 }
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
@@ -62,7 +62,7 @@ void setupBluetooth()
 {
   pinMode(pinAnalog, INPUT);
 
-  BLEDevice::init(randomize_ID_BT().c_str());
+  BLEDevice::init(BT_NAME);
 
   // Cria server
   serverBT = BLEDevice::createServer();

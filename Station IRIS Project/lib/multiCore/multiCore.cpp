@@ -1,21 +1,20 @@
 // Inclusões
 #include "multiCore.h"
-
-
+// Nucleo 0, falta adicionar semaforo binario.
 
 // Funções
-void taskLoRa(void *pvParameters) // Nucleo 0, falta adicionar semaforo binario.
+void taskLoRa(void *pvParameters)
 {
   while (1)
   {
     static unsigned long tLoRaSend = 0;
     if ((xTaskGetTickCount() - tLoRaSend) > INTERVAL)
     {
-      send_LoRa_Message("", &gateway);
+      send_LoRa_Message(&gateway, &sensor);
       tLoRaSend = xTaskGetTickCount();
     }
     gateway.packSize = LoRa.parsePacket();
-    receive_LoRa_Message(&gateway);
+    receive_LoRa_Message(&gateway, &hardware);
     vTaskDelay(1);
   }
 }

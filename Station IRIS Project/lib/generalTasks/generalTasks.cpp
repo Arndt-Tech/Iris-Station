@@ -9,6 +9,10 @@ void configBegin()
 {
   pinMode(pin_resetEEPROM, INPUT);
   pinMode(DHTpin, INPUT);
+  pinMode(valvePin1, OUTPUT);
+  pinMode(valvePin2, OUTPUT);
+  digitalWrite(valvePin1, LOW);
+  digitalWrite(valvePin2, LOW);
   Serial.begin(115200);
   EEPROM.begin(EEPROM_SIZE);
   dht.begin();
@@ -46,6 +50,40 @@ void resetClear()
     {
       clear_EEPROM(0, EEPROM_SIZE);
       resetModule();
+    }
+  }
+}
+
+void valve(uint8_t state)
+{
+  uint8_t running = 0;
+  static unsigned long tValve = 0;
+  if (state)
+  {
+    if ((millis() - tValve) < 5000 && !running)
+    {
+      digitalWrite(valvePin1, 0);
+      digitalWrite(valvePin2, 1);
+      running = 1;
+    }
+    if ((millis() - tValve) > 5000)
+    {
+      running = 0;
+      tValve = millis();
+    }
+    }
+  else if (!state)
+  {
+    if ((millis() - tValve) < 5000 && !running)
+    {
+      digitalWrite(valvePin1, 1);
+      digitalWrite(valvePin2, 0);
+      running = 1;
+    }
+    if ((millis() - tValve) > 5000)
+    {
+      running = 0;
+      tValve = millis();
     }
   }
 }

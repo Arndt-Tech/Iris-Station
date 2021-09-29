@@ -57,7 +57,7 @@ void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool cle
     display.drawIco16x16(88, 0, lora_mid_signal, false);
   else if (lora->signal < -60 && lora->signal >= -120)
     display.drawIco16x16(88, 0, lora_low_signal, false);
-  else if (lora->signal < -120)
+  else if (lora->signal < -120 || lora->signal > 0)
     display.drawIco16x16(88, 0, lora_not_signal, false);
 
   display.drawHorizontalLine(0, 21, 128);

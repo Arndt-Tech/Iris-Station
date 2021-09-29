@@ -8,9 +8,11 @@
 
 // Struct's externas
 extern networkLora gateway;
+extern Sensor sensor;
+extern generalData hardware;
 
 // Funções
-void taskLoRa (void *pvParameters);
+void taskLoRa(void *pvParameters);
 void setupMultiCore(BaseType_t core);
 
 #endif

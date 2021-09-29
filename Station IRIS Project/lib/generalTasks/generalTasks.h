@@ -11,7 +11,7 @@
 #include "specFunctions.h"
 #include "ChipID.h"
 #include "_EEPROM.h"
-#include "_DHT.h"
+#include "GPIO.h"
 
 // Mapeamento de hardware
 #define pin_resetEEPROM 17
@@ -23,5 +23,6 @@
 void configBegin();
 void setupDataSystem(networkLora *gtw);
 void resetClear();
+void valve(uint8_t state);
 
 #endif
