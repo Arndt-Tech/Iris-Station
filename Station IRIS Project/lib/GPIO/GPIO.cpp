@@ -5,20 +5,21 @@
 DHT dht(DHTpin, typeDHT);
 
 // Funções
-bool readDHT(Sensor *temp)
+uint8_t readDHT(networkLora *gtw)
 {
-  float aux_temp = temp->temperature, aux_humidity = temp->humidity;
+  float aux_temp = gtw->packet.temperature;
+  uint8_t aux_humidity = gtw->packet.humidity;
   static unsigned long tempoLeituraDHT = 0;
   if ((xTaskGetTickCount() - tempoLeituraDHT) > readTime)
   {
-    temp->temperature = dht.readTemperature();
-    temp->humidity = dht.readHumidity();
+    gtw->packet.temperature = dht.readTemperature();
+    gtw->packet.humidity = (uint8_t)dht.readHumidity();
     tempoLeituraDHT = xTaskGetTickCount();
   }
-  if (isnan(temp->humidity) || isnan(temp->temperature))
+  if (isnan(gtw->packet.humidity) || isnan(gtw->packet.temperature))
   {
-    temp->temperature = aux_temp;
-    temp->humidity = aux_humidity;
+    gtw->packet.temperature = aux_temp;
+    gtw->packet.humidity = aux_humidity;
     return 0;
   }
   return 1;

@@ -15,8 +15,6 @@
 
 // Struct's externas
 extern networkLora gateway;
-extern Sensor sensor;
-extern generalData hardware;
 
 // Funções
 void setupTasks();

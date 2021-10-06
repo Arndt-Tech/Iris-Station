@@ -19,46 +19,42 @@ void setupLoRa(networkLora *gtw)
   LoRa.enableCrc();
 }
 
-void runningLoRa(networkLora *gtw, generalData *pin, Sensor *data)
+void runningLoRa(networkLora *gtw)
 {
   if (gtw->received)
-    send_LoRa_Message(gtw, data);
-  receive_LoRa_Message(gtw, pin);
+    send_LoRa_Message(gtw);
+  receive_LoRa_Message(gtw);
   vTaskDelay(1);
 }
 
-void send_LoRa_Message(networkLora *gtw, Sensor *data)
+void send_LoRa_Message(networkLora *gtw)
 {
-  uint16_t aux_temp = data->temperature * 10;
-  uint8_t packLen = sizeof(gtw->destAddr) +
-                    sizeof(gtw->localAddr) +
-                    sizeof(data->humidity) +
-                    sizeof(data->temperature)/2 +
-                    sizeof(packLen);
+  uint16_t aux_temp = gtw->packet.temperature * 10;
+  gtw->packet.packetLenght = (sizeof(gtw->packet) - (size_t)4);
   LoRa.beginPacket();
   // Endereço destino
-  LoRa.write(gtw->destAddr);
-  LoRa.write(gtw->destAddr >> 8 & 0xFF);
-  LoRa.write(gtw->destAddr >> 16 & 0xFF);
-  LoRa.write(gtw->destAddr >> 24 & 0xFF);
+  LoRa.write(gtw->packet.destAddr);
+  LoRa.write(gtw->packet.destAddr >> 8 & 0xFF);
+  LoRa.write(gtw->packet.destAddr >> 16 & 0xFF);
+  LoRa.write(gtw->packet.destAddr >> 24 & 0xFF);
   // Endereço local
-  LoRa.write(gtw->localAddr);
-  LoRa.write(gtw->localAddr >> 8 & 0xFF);
-  LoRa.write(gtw->localAddr >> 16 & 0xFF);
-  LoRa.write(gtw->localAddr >> 24 & 0xFF);
+  LoRa.write(gtw->packet.localAddr);
+  LoRa.write(gtw->packet.localAddr >> 8 & 0xFF);
+  LoRa.write(gtw->packet.localAddr >> 16 & 0xFF);
+  LoRa.write(gtw->packet.localAddr >> 24 & 0xFF);
   // Umidade
-  LoRa.write(data->humidity);
+  LoRa.write(gtw->packet.humidity);
   // Temperatura
   LoRa.write(aux_temp);
   LoRa.write(aux_temp >> 8 & 0xFF);
   // Tamanho do pacote
-  LoRa.write(packLen);
+  LoRa.write(gtw->packet.packetLenght);
   // Fim do pacote
   LoRa.endPacket();
   gtw->received = 0;
 }
 
-String receive_LoRa_Message(networkLora *gtw, generalData *pin)
+String receive_LoRa_Message(networkLora *gtw)
 {
   uint8_t packSize = LoRa.parsePacket();
   if (packSize == 0)
@@ -66,23 +62,23 @@ String receive_LoRa_Message(networkLora *gtw, generalData *pin)
   uint8_t to_who_addr[4] = {0};
   uint8_t sender_addr[4] = {0};
   uint16_t incomingLength = 0;
-  uint8_t aux_valveStatus = 0;
+  uint8_t __valveStatus = 0;
   for (register int i = 0; i < 4; i++)
     to_who_addr[i] = LoRa.read();
   for (register int i = 0; i < 4; i++)
     sender_addr[i] = LoRa.read();
-  if (asm_addr(to_who_addr) != gtw->localAddr || asm_addr(sender_addr) != gtw->destAddr)
+  if (asm_addr(to_who_addr) != gtw->packet.localAddr || asm_addr(sender_addr) != gtw->packet.destAddr)
     return "";
-  aux_valveStatus = LoRa.read();
+  __valveStatus = LoRa.read();
   incomingLength = LoRa.read();
   if (incomingLength != packSize)
     return ""; // Pacote inconsistente
-  pin->valveStatus = aux_valveStatus;
+  gtw->valveStatus = __valveStatus;
   gtw->received = 1;
   gtw->signal = LoRa.packetRssi();
   Serial.println("Endereço pra quem: " + String(asm_addr(to_who_addr)));
   Serial.println("Endereço remetente: " + String(asm_addr(sender_addr)));
-  Serial.println("Comando: " + String(pin->valveStatus));
+  Serial.println("Comando: " + String(gtw->valveStatus));
   Serial.println("Tamanho recebido: " + String(incomingLength));
   Serial.println("Tamanho identificado: " + String(packSize));
   Serial.println("");

@@ -16,15 +16,15 @@ void taskLoRa(void *pvParameters)
 {
   setupLoRa(&gateway);
   while (1)
-    runningLoRa(&gateway, &hardware, &sensor);
+    runningLoRa(&gateway);
 }
 
 void taskReadData(void *pvParameters)
 {
   while (1)
   {
-    readDHT(&sensor);
-    valve(hardware.valveStatus);
+    readDHT(&gateway);
+    valve(gateway.valveStatus);
     vTaskDelay(1);
   }
 }
@@ -33,7 +33,7 @@ void taskOled(void *pvParameters)
 {
   while (1)
   {
-    dataBar(&sensor, "3", &gateway, false, true);
+    dataBar(&gateway, "3", false, true);
     runnigSystem(&gateway, true, false);
     vTaskDelay(1);
   }
@@ -47,6 +47,3 @@ void taskReset(void *pvParameters)
     vTaskDelay(1);
   }
 }
-
-// interrupção;
-//resetClear();

@@ -22,12 +22,12 @@ void setupOLED()
   vTaskDelay(3000);
 }
 
-void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool clear)
+void dataBar(networkLora *gtw, String icon, bool commit, bool clear)
 {
   if (clear)
     display.clear();
   // Temperatura
-  if (isnan(data->temperature))
+  if (isnan(gtw->packet.temperature))
   {
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Dialog_plain_12);
@@ -37,7 +37,7 @@ void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool cle
   {
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Dialog_plain_12);
-    display.drawString(0, 4, String(data->temperature, 1) + "°C");
+    display.drawString(0, 4, String(gtw->packet.temperature, 1) + "°C");
   }
 
   // Ícone de tempo
@@ -48,16 +48,16 @@ void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool cle
   // dBM
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Dialog_plain_12);
-  display.drawString(0, 64, String(lora->signal));
+  display.drawString(0, 64, String(gtw->signal));
 
   // Força sinal LoRa
-  if (lora->signal >= -35)
+  if (gtw->signal >= -35)
     display.drawIco16x16(88, 0, lora_str_signal, false);
-  else if (lora->signal < -35 && lora->signal >= -60)
+  else if (gtw->signal < -35 && gtw->signal >= -60)
     display.drawIco16x16(88, 0, lora_mid_signal, false);
-  else if (lora->signal < -60 && lora->signal >= -120)
+  else if (gtw->signal < -60 && gtw->signal >= -120)
     display.drawIco16x16(88, 0, lora_low_signal, false);
-  else if (lora->signal < -120 || lora->signal > 0)
+  else if (gtw->signal < -120 || gtw->signal > 0)
     display.drawIco16x16(88, 0, lora_not_signal, false);
 
   display.drawHorizontalLine(0, 21, 128);
@@ -71,8 +71,8 @@ void runnigSystem(networkLora *gtw, bool commit, bool clear)
     display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Dialog_plain_12);
-  display.drawString(0, 25, "Gateway: " + String(gtw->destAddr));
-  display.drawString(0, 45, "Local: " + String(gtw->localAddr));
+  display.drawString(0, 25, "Gateway: " + String(gtw->packet.destAddr));
+  display.drawString(0, 45, "Local: " + String(gtw->packet.localAddr));
   if (commit)
     display.display();
 }

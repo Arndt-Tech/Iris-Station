@@ -6,7 +6,6 @@
 #include <FreeRTOS.h>
 #include <SPI.h>
 #include <LoRa.h>
-#include "GPIO.h"
 
 /*----------------------------------------------------------------------------------------------*/
 // LoRa Config.
@@ -41,21 +40,30 @@
 #define DI00 26
 
 // Struct's
-typedef struct _lora
+typedef struct _package
 {
-  // Addr's
   uint32_t localAddr;
   uint32_t destAddr;
+  float temperature;
+  uint8_t humidity;
+  uint8_t packetLenght;
+} loraPackage;
+
+typedef struct _lora
+{
+  // Package
+  loraPackage packet;
   // Status
   uint8_t received;
   int8_t signal;
+  uint8_t valveStatus;
 } networkLora;
 
 // Funções
 void setupLoRa(networkLora *gtw);
-void runningLoRa(networkLora *gtw, generalData *pin, Sensor *data);
-void send_LoRa_Message(networkLora *gtw, Sensor *data);
-String receive_LoRa_Message(networkLora *gtw, generalData *pin);
+void runningLoRa(networkLora *gtw);
+void send_LoRa_Message(networkLora *gtw);
+String receive_LoRa_Message(networkLora *gtw);
 uint32_t asm_addr(uint8_t *addr);
 
 #endif

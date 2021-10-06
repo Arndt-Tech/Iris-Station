@@ -248,9 +248,9 @@ void bluetoothConfig()
 void getID(networkLora *gtw)
 {
   writeBT("|");
-  gtw->destAddr = atol(getData().c_str());
-  gtw->localAddr = atol(writeBT(String(getChipID())).c_str());
-  Serial.println("Chip ID: " + String(gtw->localAddr));
+  gtw->packet.destAddr = atol(getData().c_str());
+  gtw->packet.localAddr = atol(writeBT(String(getChipID())).c_str());
+  Serial.println("Chip ID: " + String(gtw->packet.localAddr));
   vTaskDelay(1000);
   writeBT("&");
 }

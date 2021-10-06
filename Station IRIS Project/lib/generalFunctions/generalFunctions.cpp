@@ -30,13 +30,13 @@ void setupDataSystem(networkLora *gtw)
     getID(gtw);
 
     // Aloca novos dados na EEPROM
-    write_EEPROM(String(gtw->destAddr), chID_addr_min);
-    write_EEPROM(String(gtw->localAddr), loChID_addr_min);
+    write_EEPROM(String(gtw->packet.destAddr), chID_addr_min);
+    write_EEPROM(String(gtw->packet.localAddr), loChID_addr_min);
   }
   else
   {
     // Lê dados da EEPROM
-    gtw->destAddr = atol(read_EEPROM(chID_addr_min).c_str());
-    gtw->localAddr = atol(read_EEPROM(loChID_addr_min).c_str());
+    gtw->packet.destAddr = atol(read_EEPROM(chID_addr_min).c_str());
+    gtw->packet.localAddr = atol(read_EEPROM(loChID_addr_min).c_str());
   }
 }

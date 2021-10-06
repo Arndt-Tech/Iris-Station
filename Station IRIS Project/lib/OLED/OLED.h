@@ -21,7 +21,7 @@
 
 // Funções
 void setupOLED();
-void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool clear);
+void dataBar(networkLora *gtw, String icon, bool commit, bool clear);
 void runnigSystem(networkLora *gtw, bool commit, bool clear);
 
 #endif
