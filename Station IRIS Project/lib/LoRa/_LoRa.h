@@ -43,19 +43,13 @@
 // Struct's
 typedef struct _lora
 {
-  // Protocol
+  // Addr's
   uint32_t localAddr;
   uint32_t destAddr;
-  uint8_t packSize;
-  // Others
+  // Status
   uint8_t received;
   int8_t signal;
-  int8_t noise;
 } networkLora;
-
-extern networkLora gateway;
-extern Sensor sensor;
-extern generalData hardware;
 
 // Funções
 void setupLoRa(networkLora *gtw);

@@ -105,7 +105,7 @@ void waitingBT() // Aguarda bluetooth conectar
   while (!connectedBT)
   {
     Serial.print(".");
-    delay(500);
+    vTaskDelay(500);
   }
   Serial.println("Bluetooth conectado!");
 }
@@ -131,10 +131,10 @@ void waitingREQUEST() // Aguarda requisição do clientAPP
     refreshConnectionBT();
     if (connectedBT)
       Serial.println("Esperando requisição... ");
-    delay(250);
+    vTaskDelay(250);
   } while (!getRequestBT());
   Serial.println("Requisição aceita: " + String(getRequestBT()));
-  delay(1000);
+  vTaskDelay(1000);
 }
 
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
@@ -212,7 +212,7 @@ void refreshConnectionBT()
   if (!connectedBT && oldDeviceConnected)
   {
     Serial.println("Bluetooth desconectado!");
-    delay(500);
+    vTaskDelay(500);
     packBT = ""; // Limpa o buffer
     serverBT->startAdvertising();
     oldDeviceConnected = connectedBT;
@@ -251,6 +251,6 @@ void getID(networkLora *gtw)
   gtw->destAddr = atol(getData().c_str());
   gtw->localAddr = atol(writeBT(String(getChipID())).c_str());
   Serial.println("Chip ID: " + String(gtw->localAddr));
-  delay(1000);
+  vTaskDelay(1000);
   writeBT("&");
 }

@@ -19,7 +19,7 @@ void setupOLED()
   display.setFont(Dialog_plain_12);
   display.drawString(64, 41, "IRIS");
   display.display();
-  delay(3000);
+  vTaskDelay(3000);
 }
 
 void dataBar(Sensor *data, String icon, networkLora *lora, bool commit, bool clear)

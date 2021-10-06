@@ -1,8 +1,5 @@
 // Inclusões
 #include "specFunctions.h"
 
-// Variáveis
-hw_timer_t *wTimer = NULL;
-
 // Funções
-void IRAM_ATTR resetModule() {ESP.restart();}  // Reinicia dispositivo
+void IRAM_ATTR resetModule() { esp_restart(); } // Reinicia dispositivo

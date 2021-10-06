@@ -1,5 +1,5 @@
-#ifndef _OLED_H
-#define _OLED_H
+#ifndef __OLED_H
+#define __OLED_H
 
 // Inclusões
 #include <Arduino.h>
@@ -9,14 +9,12 @@
 #include "fonts.h"
 #include "images.h"
 #include "icons.h"
-
 // Arquivos com funções para printar
 #include "ChipID.h"
 #include "_LoRa.h"
 #include "GPIO.h"
 
 // OLED pinout
-
 #define OLED_SCL 15
 #define OLED_SDA 4
 #define OLED_RST 16

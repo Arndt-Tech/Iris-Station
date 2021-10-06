@@ -11,7 +11,7 @@
 #include "esp_err.h"
 #include "esp_gap_bt_api.h"
 #include "esp_bt_main.h"
-#include "specFunctions.h"
+#include "task.h"
 #include "ChipID.h"
 #include "_LoRa.h"
 

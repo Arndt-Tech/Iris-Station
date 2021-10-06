@@ -6,12 +6,19 @@
 #include <FreeRTOS.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include "_EEPROM.h"
+#include "specFunctions.h"
 
-// Definições
+// Mapeamento de hardware
 #define DHTpin 2
 #define valvePin1 12
 #define valvePin2 13
+#define pin_resetEEPROM 17
+
+// Definições
+#define readTime 2000
 #define typeDHT DHT11
+#define resetTmrOF 3
 
 // Struct's
 typedef struct
@@ -27,6 +34,7 @@ typedef struct
 
 // Funções
 bool readDHT(Sensor *temp);
-
+void valve(uint8_t state);
+void resetClear();
 
 #endif

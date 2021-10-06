@@ -1,5 +1,5 @@
 /*
-|----------| Hardware Mapping |----------|
+|----------| Station Hardware Mapping |----------|
 
    General pinout
 #define DHTpin 2
@@ -23,3 +23,6 @@
    BLE pinout
 #define pinAnalog 36
 */
+
+
+
