@@ -14,7 +14,6 @@ void setupTasks()
 // Tasks
 void taskLoRa(void *pvParameters)
 {
-  setupLoRa(&gateway);
   while (1)
     runningLoRa(&gateway);
 }

@@ -1,10 +1,15 @@
 /*
 |----------| Station Hardware Mapping |----------|
 
-   General pinout
+   Buzzer pinout
+#define buzzerPin 23 
+
+   DHT pinout
 #define DHTpin 2
 #define valvePin1 12
 #define valvePin2 13
+
+   EEPROM pinout
 #define pin_resetEEPROM 17
 
    OLED pinout
@@ -23,6 +28,3 @@
    BLE pinout
 #define pinAnalog 36
 */
-
-
-

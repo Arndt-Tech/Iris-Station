@@ -27,9 +27,6 @@
 #define requestClientAppBT "hHo}8j<Sf(:4mTQW8W#l"  // Recebe do app
 #define passwordClientAppBT "&i((3,iH0,+-z[i]PpAh" // Envia para o app
 
-// Pino de leitura analógica
-#define pinAnalog 36
-
 // Funções
 // Setup
 void setupBluetooth();    // Inicializa bluetooth

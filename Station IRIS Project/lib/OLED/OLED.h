@@ -14,11 +14,6 @@
 #include "_LoRa.h"
 #include "GPIO.h"
 
-// OLED pinout
-#define OLED_SCL 15
-#define OLED_SDA 4
-#define OLED_RST 16
-
 // Funções
 void setupOLED();
 void dataBar(networkLora *gtw, String icon, bool commit, bool clear);

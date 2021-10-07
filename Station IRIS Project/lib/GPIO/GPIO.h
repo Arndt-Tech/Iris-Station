@@ -11,11 +11,20 @@
 #include "_LoRa.h"
 
 // Mapeamento de hardware
+// DHT
 #define DHTpin 2
 #define valvePin1 12
 #define valvePin2 13
+// EEPROM
 #define pin_resetEEPROM 17
-
+// Bluetooth
+#define pinAnalog 36
+// OLED 
+#define OLED_SCL 15
+#define OLED_SDA 4
+#define OLED_RST 16
+// Buzzer error 
+#define buzzerPin 23
 // Definições
 #define readTime 2000
 #define typeDHT DHT11

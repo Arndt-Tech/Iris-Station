@@ -31,7 +31,6 @@
     Time on air -> 561 ms
 */
 // Pinout
-
 #define SCK 5
 #define MISO 19
 #define MOSI 27
