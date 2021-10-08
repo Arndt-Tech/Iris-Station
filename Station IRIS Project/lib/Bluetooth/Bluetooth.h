@@ -11,6 +11,8 @@
 #include "esp_err.h"
 #include "esp_gap_bt_api.h"
 #include "esp_bt_main.h"
+#include "pinout.h"
+#include "errors.h"
 #include "task.h"
 #include "ChipID.h"
 #include "_LoRa.h"
@@ -31,7 +33,6 @@
 // Setup
 void setupBluetooth();    // Inicializa bluetooth
 void bluetoothConfig();   // Configura bluetooth
-String randomize_ID_BT(); // Monta nome do bluetooth
 
 // Get Data
 String getData(); // Recebe dados com callback

@@ -4,6 +4,8 @@
 // Inclusões
 #include <Arduino.h>
 #include <FreeRTOS.h>
+#include "pinout.h"
+#include "errors.h"
 
 // Funções
 uint32_t getChipID();

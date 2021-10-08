@@ -6,6 +6,8 @@
 #include <FreeRTOS.h>
 #include <SPI.h>
 #include <LoRa.h>
+#include "pinout.h"
+#include "errors.h"
 
 /*----------------------------------------------------------------------------------------------*/
 // LoRa Config.
@@ -30,13 +32,6 @@
     Equivalent bitrate -> 366 bytes/s
     Time on air -> 561 ms
 */
-// Pinout
-#define SCK 5
-#define MISO 19
-#define MOSI 27
-#define SS 18
-#define RST 14
-#define DI00 26
 
 // Struct's
 typedef struct _package
@@ -62,7 +57,7 @@ typedef struct _lora
 void setupLoRa(networkLora *gtw);
 void runningLoRa(networkLora *gtw);
 void send_LoRa_Message(networkLora *gtw);
-String receive_LoRa_Message(networkLora *gtw);
+err receive_LoRa_Message(networkLora *gtw);
 uint32_t asm_addr(uint8_t *addr);
 
 #endif

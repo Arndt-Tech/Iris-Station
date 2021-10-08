@@ -4,9 +4,11 @@
 // Inclusões
 #include <Arduino.h>
 #include <FreeRTOS.h>
+#include "pinout.h"
+#include "errors.h"
 #include "OLED.h"
 #include "_LoRa.h"
-#include "GPIO.h"
+#include "Peripherals.h"
 
 // Definições
 #define CORE(a) (BaseType_t)(a)

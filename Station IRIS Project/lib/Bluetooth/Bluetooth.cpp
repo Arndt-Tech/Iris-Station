@@ -51,17 +51,9 @@ class CallbackRX : public BLECharacteristicCallbacks
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 // FUNÇÕES
 
-String randomize_ID_BT()
-{
-  randomSeed(analogRead(pinAnalog));
-  return String(BT_NAME " - " + String(random(9999), DEC));
-}
-
 //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 void setupBluetooth()
 {
-  pinMode(pinAnalog, INPUT);
-
   BLEDevice::init(BT_NAME);
 
   // Cria server
@@ -196,7 +188,7 @@ bool getRequestBT()
         }
         else
         {
-          ESP.restart();
+          resetModule();
           packBT = "";
           return 0;
         }

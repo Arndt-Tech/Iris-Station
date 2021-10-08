@@ -7,9 +7,8 @@ void setupLoRa(networkLora *gtw)
   LoRa.setPins(SS, RST, DI00);
   if (!LoRa.begin(BAND))
   {
-    Serial.println("Erro ao inicializar LoRa!");
-    while (1)
-      ;
+    error(ERR_INITIALIZING_LORA);
+    while(1);
   }
   //LoRa.setSpreadingFactor(SF);
   //LoRa.setSignalBandwidth(BW);
@@ -54,11 +53,11 @@ void send_LoRa_Message(networkLora *gtw)
   gtw->received = 0;
 }
 
-String receive_LoRa_Message(networkLora *gtw)
+err receive_LoRa_Message(networkLora *gtw)
 {
   uint8_t packSize = LoRa.parsePacket();
   if (packSize == 0)
-    return "";
+    return WAR_NO_LORA_PACKAGES;
   uint8_t to_who_addr[4] = {0};
   uint8_t sender_addr[4] = {0};
   uint16_t incomingLength = 0;
@@ -68,11 +67,11 @@ String receive_LoRa_Message(networkLora *gtw)
   for (register int i = 0; i < 4; i++)
     sender_addr[i] = LoRa.read();
   if (asm_addr(to_who_addr) != gtw->packet.localAddr || asm_addr(sender_addr) != gtw->packet.destAddr)
-    return "";
+    return WAR_PACKET_OUT_OF_PROTOCOL;
   __valveStatus = LoRa.read();
   incomingLength = LoRa.read();
   if (incomingLength != packSize)
-    return ""; // Pacote inconsistente
+    return WAR_INCONSISTENT_LORA_PACKAGE; // Pacote inconsistente
   gtw->valveStatus = __valveStatus;
   gtw->received = 1;
   gtw->signal = LoRa.packetRssi();
@@ -82,7 +81,7 @@ String receive_LoRa_Message(networkLora *gtw)
   Serial.println("Tamanho recebido: " + String(incomingLength));
   Serial.println("Tamanho identificado: " + String(packSize));
   Serial.println("");
-  return "";
+  return NOT_ERROR;
 }
 
 uint32_t asm_addr(uint8_t *addr)

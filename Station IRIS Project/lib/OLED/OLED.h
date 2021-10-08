@@ -6,13 +6,14 @@
 #include <FreeRTOS.h>
 #include <Wire.h>
 #include <SSD1306.h>
+#include "pinout.h"
+#include "errors.h"
 #include "fonts.h"
 #include "images.h"
 #include "icons.h"
-// Arquivos com funções para printar
 #include "ChipID.h"
 #include "_LoRa.h"
-#include "GPIO.h"
+#include "Peripherals.h"
 
 // Funções
 void setupOLED();

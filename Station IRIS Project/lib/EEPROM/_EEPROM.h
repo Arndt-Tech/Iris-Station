@@ -4,6 +4,8 @@
 // Incluões
 #include <Arduino.h>
 #include <FreeRTOS.h>
+#include "pinout.h"
+#include "errors.h"
 #include "EEPROM.h"
 
 // EEPROM Address
