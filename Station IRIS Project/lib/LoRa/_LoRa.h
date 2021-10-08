@@ -49,7 +49,7 @@ typedef struct _lora
   loraPackage packet;
   // Status
   uint8_t received;
-  int8_t signal;
+  int16_t signal;
   uint8_t valveStatus;
 } networkLora;
 

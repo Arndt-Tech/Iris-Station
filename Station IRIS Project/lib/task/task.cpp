@@ -4,11 +4,11 @@
 // Inicialização das tasks
 void setupTasks()
 {
-  xTaskCreatePinnedToCore(taskOled, "taskOled", STACK(4096), NULL, PRIORITY(3), NULL, CORE(1));
   xTaskCreatePinnedToCore(taskReset, "taskReset", STACK(2048), NULL, PRIORITY(4), NULL, CORE(1));
-  vTaskDelay(2000);
   xTaskCreatePinnedToCore(taskReadData, "taskReadData", STACK(1024), NULL, PRIORITY(5), NULL, CORE(1));
+  vTaskDelay(2000);
   xTaskCreatePinnedToCore(taskLoRa, "taskLora", STACK(8192), NULL, PRIORITY(5), NULL, CORE(0));
+  xTaskCreatePinnedToCore(taskOled, "taskOled", STACK(4096), NULL, PRIORITY(3), NULL, CORE(1));
 }
 
 // Tasks
@@ -22,7 +22,7 @@ void taskReadData(void *pvParameters)
 {
   while (1)
   {
-    readDHT(&gateway);
+    error(readDHT(&gateway));
     valve(gateway.valveStatus);
     vTaskDelay(1);
   }

@@ -28,10 +28,10 @@ void configBegin(networkLora *gtw)
   setupDataSystem(gtw);
   // Inicialização da rede LoRa
   setupLoRa(gtw);
+  // Configuração geral completa
+  error(INIT_OK);
   // Inicialização das tasks
   setupTasks();
-  // Inicialização geral completa
-  error(INIT_OK);
 }
 
 void setupDataSystem(networkLora *gtw)
