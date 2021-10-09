@@ -48,7 +48,7 @@ void resetClear()
     counter++;
     if (counter == resetTmrOF)
     {
-      clear_EEPROM(0, EEPROM_SIZE);
+      clearEEPROM(0, EEPROM_SIZE);
       resetModule();
     }
   }

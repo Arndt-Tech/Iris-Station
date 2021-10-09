@@ -43,6 +43,7 @@ typedef struct _package
   uint8_t packetLenght;
 } loraPackage;
 
+
 typedef struct _lora
 {
   // Package

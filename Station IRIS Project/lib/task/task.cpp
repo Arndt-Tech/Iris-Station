@@ -46,3 +46,21 @@ void taskReset(void *pvParameters)
     vTaskDelay(1);
   }
 }
+
+/*
+void verify_LoRa_Timeout(networkFirebase *fb)
+{
+  static unsigned long tPend = 0;
+  if ((xTaskGetTickCount() - tPend) >= loraTmt)
+  {
+    for (uint8_t i = 0; i < fb->TOTAL_STATIONS; i++)
+    {
+      if (fb->STATION_ID[i][RETURN] == "1")
+        fb->STATION_ID[i][ISCONNECTED] = "false";
+      else if (fb->STATION_ID[i][RETURN] == "0")
+        fb->STATION_ID[i][ISCONNECTED] = "true";
+    }
+    tPend = xTaskGetTickCount();
+  }
+}
+*/

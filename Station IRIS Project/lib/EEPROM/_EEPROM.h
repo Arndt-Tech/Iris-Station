@@ -20,9 +20,9 @@
 #define chID_addr_max 25
 
 // Funções
-bool verify_EEPROM(uint8_t addr_min);
-bool write_EEPROM(String str, uint8_t addr);
-bool clear_EEPROM(uint8_t addr0, uint8_t addr1);
-String read_EEPROM(uint8_t addr_min);
+bool verifyEEPROM(uint8_t addr_min);
+bool writeEEPROM(uint32_t data, uint8_t addr);
+bool clearEEPROM(uint8_t addr0, uint8_t addr1);
+uint32_t readEEPROM(uint8_t addr);
 
 #endif

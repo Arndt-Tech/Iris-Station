@@ -37,7 +37,7 @@ void configBegin(networkLora *gtw)
 void setupDataSystem(networkLora *gtw)
 {
   // Verifica EEPROM
-  if (!verify_EEPROM(loChID_addr_min) || !verify_EEPROM(chID_addr_min))
+  if (!verifyEEPROM(loChID_addr_min) || !verifyEEPROM(chID_addr_min))
   {
     // Configura bluetooth e recebe novos dados
     error(WAR_EMPTY_EEPROM);
@@ -45,14 +45,14 @@ void setupDataSystem(networkLora *gtw)
     getID(gtw);
 
     // Aloca novos dados na EEPROM
-    write_EEPROM(String(gtw->packet.destAddr), chID_addr_min);
-    write_EEPROM(String(gtw->packet.localAddr), loChID_addr_min);
+    writeEEPROM(gtw->packet.destAddr, chID_addr_min);
+    writeEEPROM(gtw->packet.localAddr, loChID_addr_min);
   }
   else
   {
     // Lê dados da EEPROM
-    gtw->packet.destAddr = atol(read_EEPROM(chID_addr_min).c_str());
-    gtw->packet.localAddr = atol(read_EEPROM(loChID_addr_min).c_str());
+    gtw->packet.destAddr = readEEPROM(chID_addr_min);
+    gtw->packet.localAddr = readEEPROM(loChID_addr_min);
   }
 }
 
