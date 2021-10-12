@@ -19,6 +19,10 @@
 #define OLED_SDA 4
 #define OLED_RST 16
 
+// GPS pinout
+#define RX_GPS (22)
+#define TX_GPS (25)
+
 //   LoRa pinout
 #define SCK 5
 #define MISO 19

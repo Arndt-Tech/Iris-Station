@@ -7,18 +7,18 @@ extern DHT dht;
 // Funções
 err readDHT(networkLora *gtw)
 {
-  float aux_temp = gtw->packet.temperature;
+  float aux_temp = gtw->packetAux.temperature;
   uint8_t aux_humidity = gtw->packet.humidity;
   static unsigned long tempoLeituraDHT = 0;
   if ((xTaskGetTickCount() - tempoLeituraDHT) > readTime)
   {
-    gtw->packet.temperature = dht.readTemperature();
+    gtw->packetAux.temperature = dht.readTemperature();
     gtw->packet.humidity = (uint8_t)dht.readHumidity();
     tempoLeituraDHT = xTaskGetTickCount();
   }
-  if (isnan(gtw->packet.humidity) || isnan(gtw->packet.temperature))
+  if (isnan(gtw->packet.humidity) || isnan(gtw->packetAux.temperature))
   {
-    gtw->packet.temperature = aux_temp;
+    gtw->packetAux.temperature = aux_temp;
     gtw->packet.humidity = aux_humidity;
     return ERR_DHT_ISNAN;
   }

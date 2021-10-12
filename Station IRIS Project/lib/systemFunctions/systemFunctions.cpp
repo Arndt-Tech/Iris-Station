@@ -5,7 +5,7 @@
 DHT dht(DHTpin, typeDHT);
 
 // Funções
-void configBegin(networkLora *gtw)
+void configBegin(networkLora *gtw, GPS *gps)
 {
   // Inicialização dos pinos
   pinMode(pin_resetEEPROM, INPUT);
@@ -16,6 +16,8 @@ void configBegin(networkLora *gtw)
   valve(false);
   // Inicialização da Serial
   Serial.begin(115200);
+  // Inicialização da SoftwareSerial
+  setupSoftwareSerial(gps);
   // Inicialização da EEPROM
   EEPROM.begin(EEPROM_SIZE);
   // Inicialização dos sensores

@@ -27,7 +27,7 @@ void dataBar(networkLora *gtw, String icon, bool commit, bool clear)
   if (clear)
     display.clear();
   // Temperatura
-  if (isnan(gtw->packet.temperature))
+  if (isnan(gtw->packetAux.temperature))
   {
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Dialog_plain_12);
@@ -71,8 +71,10 @@ void runnigSystem(networkLora *gtw, bool commit, bool clear)
     display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Dialog_plain_12);
-  display.drawString(0, 25, "Gateway: " + String(gtw->packet.destAddr));
-  display.drawString(0, 45, "Local: " + String(gtw->packet.localAddr));
+  display.drawString(0, 25, "Sinal: " + String(gtw->signal) + " dBm");
+  display.drawString(0, 45, "Status: " + String(gtw->valveStatus));
+  //display.drawString(0, 25, "Gateway: " + String(gtw->packet.destAddr));
+  //display.drawString(0, 45, "Local: " + String(gtw->packet.localAddr));
   if (commit)
     display.display();
 }

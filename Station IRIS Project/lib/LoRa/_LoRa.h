@@ -34,20 +34,29 @@
 */
 
 // Struct's
+typedef struct _lora_aux
+{
+  float temperature;
+  double latitute;
+  double longitude;
+}loraAUX;
+
 typedef struct _package
 {
   uint32_t localAddr;
   uint32_t destAddr;
-  float temperature;
+  uint16_t temperature;
   uint8_t humidity;
   uint8_t packetLenght;
+  int32_t latitude;
+  int32_t longitude;
 } loraPackage;
-
 
 typedef struct _lora
 {
   // Package
   loraPackage packet;
+  loraAUX packetAux;
   // Status
   uint8_t received;
   int16_t signal;

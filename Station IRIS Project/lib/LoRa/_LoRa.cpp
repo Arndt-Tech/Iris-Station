@@ -11,7 +11,7 @@ void setupLoRa(networkLora *gtw)
     while (1)
       ;
   }
-  //LoRa.setSpreadingFactor(SF);
+  LoRa.setSpreadingFactor(SF);
   //LoRa.setSignalBandwidth(BW);
   //LoRa.setCodingRate4(CR);
   //LoRa.setPreambleLength(PL);
@@ -32,8 +32,10 @@ void runningLoRa(networkLora *gtw)
 
 void send_LoRa_Message(networkLora *gtw)
 {
-  uint16_t aux_temp = gtw->packet.temperature * 10;
-  gtw->packet.packetLenght = (sizeof(gtw->packet) - (size_t)4);
+  gtw->packet.temperature = gtw->packetAux.temperature * 10;
+  gtw->packet.latitude = gtw->packetAux.latitute * -1000000;
+  gtw->packet.longitude = gtw->packetAux.longitude * -1000000;
+  gtw->packet.packetLenght = sizeof(gtw->packet);
   LoRa.beginPacket();
   // Endereço destino
   LoRa.write(gtw->packet.destAddr);
@@ -48,8 +50,18 @@ void send_LoRa_Message(networkLora *gtw)
   // Umidade
   LoRa.write(gtw->packet.humidity);
   // Temperatura
-  LoRa.write(aux_temp);
-  LoRa.write(aux_temp >> 8 & 0xFF);
+  LoRa.write(gtw->packet.temperature);
+  LoRa.write(gtw->packet.temperature >> 8 & 0xFF);
+  // Latitude
+  LoRa.write(gtw->packet.latitude);
+  LoRa.write(gtw->packet.latitude >> 8 & 0xFF);
+  LoRa.write(gtw->packet.latitude >> 16 & 0xFF);
+  LoRa.write(gtw->packet.latitude >> 24 & 0xFF);
+  // Longitude
+  LoRa.write(gtw->packet.longitude);
+  LoRa.write(gtw->packet.longitude >> 8 & 0xFF);
+  LoRa.write(gtw->packet.longitude >> 16 & 0xFF);
+  LoRa.write(gtw->packet.longitude >> 24 & 0xFF);
   // Tamanho do pacote
   LoRa.write(gtw->packet.packetLenght);
   // Fim do pacote

@@ -10,9 +10,10 @@
 #include "task.h"
 #include "ChipID.h"
 #include "_EEPROM.h"
+#include "GPS.h"
 
 // Funções
-void configBegin(networkLora *gtw);
+void configBegin(networkLora *gtw, GPS *gps);
 void setupDataSystem(networkLora *gtw);
 
 
