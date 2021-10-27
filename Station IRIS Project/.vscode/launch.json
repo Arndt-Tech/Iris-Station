@@ -29,6 +29,16 @@
             "projectEnvName": "heltec_wifi_lora_32_V2",
             "toolchainBinDir": "C:/Users/danie/.platformio/packages/toolchain-xtensa32/bin",
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "D:/danie/Documents/GIT_REPOS/Station-IRIS/Station IRIS Project/.pio/build/heltec_wifi_lora_32_V2/firmware.elf",
+            "projectEnvName": "heltec_wifi_lora_32_V2",
+            "toolchainBinDir": "C:/Users/danie/.platformio/packages/toolchain-xtensa32/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "loadMode": "manual"
         }
     ]
 }

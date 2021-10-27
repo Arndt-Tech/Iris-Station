@@ -239,7 +239,11 @@
                 ]
             },
             "defines": [
+<<<<<<< Updated upstream
                 "PLATFORMIO=50200",
+=======
+                "PLATFORMIO=50202",
+>>>>>>> Stashed changes
                 "ARDUINO_HELTEC_WIFI_LORA_32_V2",
                 "ESP32",
                 "ESP_PLATFORM",
