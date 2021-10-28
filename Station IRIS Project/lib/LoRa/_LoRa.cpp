@@ -27,7 +27,6 @@ void runningLoRa(networkLora *gtw)
   if (gtw->received)
     send_LoRa_Message(gtw);
   error(receive_LoRa_Message(gtw));
-  vTaskDelay(1);
 }
 
 void send_LoRa_Message(networkLora *gtw)
@@ -88,15 +87,9 @@ err receive_LoRa_Message(networkLora *gtw)
   incomingLength = LoRa.read();
   if (incomingLength != packSize)
     return ERR_INCONSISTENT_LORA_PACKAGE; // Pacote inconsistente
-  gtw->valveStatus = __valveStatus;
   gtw->received = 1;
   gtw->signal = LoRa.packetRssi();
-  Serial.println("Endereço pra quem: " + String(asm_addr(to_who_addr)));
-  Serial.println("Endereço remetente: " + String(asm_addr(sender_addr)));
-  Serial.println("Comando: " + String(gtw->valveStatus));
-  Serial.println("Tamanho recebido: " + String(incomingLength));
-  Serial.println("Tamanho identificado: " + String(packSize));
-  Serial.println("");
+  valve(gtw->valveStatus = __valveStatus);
   return NOT_ERROR;
 }
 

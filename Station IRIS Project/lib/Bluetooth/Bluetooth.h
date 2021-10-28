@@ -61,7 +61,7 @@ void callbackBLE(networkBluetooth *ble);
 void bluetoothConfig(networkBluetooth *ble); // Configura bluetooth
 
 // Duplex
-String getData(networkBluetooth *ble); // Recebe dados com callback
+String getData(networkBluetooth *ble);               // Recebe dados com callback
 String writeBT(networkBluetooth *ble, String dados); // envia dados via bluetooth
 
 // Connect
@@ -78,6 +78,6 @@ void sendREQUEST(networkBluetooth *ble);    // Envia requisição para clientAPP
 void bleDisable();
 
 // Procedures
-void getID(networkLora *gtw);
+void getID(networkBluetooth *ble, networkLora *gtw);
 
 #endif

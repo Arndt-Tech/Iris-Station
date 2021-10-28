@@ -1,12 +1,8 @@
 #include "systemFunctions.h"
 
+networkBluetooth BLE;
 networkLora gateway;
 GPS gps;
 
-void setup() { configBegin(&gateway, &gps); }
-void loop() 
-{ 
-  locationRead(&gps, &gateway);
-  Serial.println("HEAP: " + String(xPortGetFreeHeapSize()));
-  vTaskDelay(1000); 
-}
+void setup() { configBegin(&BLE, &gateway, &gps); }
+void loop() {}

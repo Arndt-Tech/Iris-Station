@@ -224,12 +224,12 @@ void bleDisable()
   esp_bt_mem_release(ESP_BT_MODE_BTDM);
 }
 
-void getID(networkLora *gtw)
-{
-  writeBT("|");
-  gtw->packet.destAddr = atol(getData().c_str());
-  gtw->packet.localAddr = atol(writeBT(String(getChipID())).c_str());
+void getID(networkBluetooth *ble , networkLora *gtw)
+{ 
+  writeBT(ble, "|");
+  gtw->packet.destAddr = atol(getData(ble).c_str());
+  gtw->packet.localAddr = atol(writeBT(ble, String(getChipID())).c_str());
   Serial.println("Chip ID: " + String(gtw->packet.localAddr));
   vTaskDelay(1000);
-  writeBT("&");
+  writeBT(ble, "&");
 }

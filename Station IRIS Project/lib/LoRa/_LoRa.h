@@ -45,7 +45,7 @@ typedef struct _package
 {
   uint32_t localAddr;
   uint32_t destAddr;
-  uint16_t temperature;
+  int16_t temperature;
   uint8_t humidity;
   uint8_t packetLenght;
   int32_t latitude;
@@ -62,6 +62,9 @@ typedef struct _lora
   int16_t signal;
   uint8_t valveStatus;
 } networkLora;
+
+// Externos
+extern void valve(uint8_t state);
 
 // Funções
 void setupLoRa(networkLora *gtw);

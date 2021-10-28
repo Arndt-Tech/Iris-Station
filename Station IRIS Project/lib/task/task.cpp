@@ -4,9 +4,9 @@
 // Inicialização das tasks
 void setupTasks()
 {
-  xTaskCreatePinnedToCore(taskReset, "taskReset", STACK(2048), NULL, PRIORITY(4), NULL, CORE(1));
   xTaskCreatePinnedToCore(taskReadData, "taskReadData", STACK(2048), NULL, PRIORITY(5), NULL, CORE(1));
   vTaskDelay(2000);
+  xTaskCreatePinnedToCore(taskGPS, "taskGPS", STACK(4096), NULL, PRIORITY(2), NULL, CORE(1));
   xTaskCreatePinnedToCore(taskLoRa, "taskLora", STACK(8192), NULL, PRIORITY(5), NULL, CORE(0));
   xTaskCreatePinnedToCore(taskOled, "taskOled", STACK(4096), NULL, PRIORITY(3), NULL, CORE(1));
 }
@@ -15,7 +15,10 @@ void setupTasks()
 void taskLoRa(void *pvParameters)
 {
   while (1)
+  {
     runningLoRa(&gateway);
+    vTaskDelay(1);
+  }
 }
 
 void taskReadData(void *pvParameters)
@@ -23,7 +26,6 @@ void taskReadData(void *pvParameters)
   while (1)
   {
     error(readDHT(&gateway));
-    valve(gateway.valveStatus);
     vTaskDelay(1);
   }
 }
@@ -47,20 +49,11 @@ void taskReset(void *pvParameters)
   }
 }
 
-/*
-void verify_LoRa_Timeout(networkFirebase *fb)
+void taskGPS(void *pvParameters)
 {
-  static unsigned long tPend = 0;
-  if ((xTaskGetTickCount() - tPend) >= loraTmt)
+  while(1)
   {
-    for (uint8_t i = 0; i < fb->TOTAL_STATIONS; i++)
-    {
-      if (fb->STATION_ID[i][RETURN] == "1")
-        fb->STATION_ID[i][ISCONNECTED] = "false";
-      else if (fb->STATION_ID[i][RETURN] == "0")
-        fb->STATION_ID[i][ISCONNECTED] = "true";
-    }
-    tPend = xTaskGetTickCount();
+    locationRead(&gps, &gateway);
+    vTaskDelay(1);
   }
 }
-*/

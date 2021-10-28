@@ -5,13 +5,15 @@
 DHT dht(DHTpin, typeDHT);
 
 // Funções
-void configBegin(networkLora *gtw, GPS *gps)
+void configBegin(networkBluetooth *ble, networkLora *gtw, GPS *gps)
 {
   // Inicialização dos pinos
   pinMode(pin_resetEEPROM, INPUT);
   pinMode(DHTpin, INPUT);
   pinMode(valvePin1, OUTPUT);
   pinMode(valvePin2, OUTPUT);
+  // Inicializa taskReset
+  xTaskCreatePinnedToCore(taskReset, "taskReset", STACK(2048), NULL, PRIORITY(4), NULL, CORE(1));
   // Inicialização da válvula
   valve(false);
   // Inicialização da Serial
@@ -27,7 +29,7 @@ void configBegin(networkLora *gtw, GPS *gps)
   // Inicialização display OLED
   setupOLED();
   // Inicialização dos dados do sistema
-  setupDataSystem(gtw);
+  setupDataSystem(ble, gtw);
   // Inicialização da rede LoRa
   setupLoRa(gtw);
   // Configuração geral completa
@@ -36,15 +38,15 @@ void configBegin(networkLora *gtw, GPS *gps)
   setupTasks();
 }
 
-void setupDataSystem(networkLora *gtw)
+void setupDataSystem(networkBluetooth *ble, networkLora *gtw)
 {
   // Verifica EEPROM
   if (!verifyEEPROM(loChID_addr_min) || !verifyEEPROM(chID_addr_min))
   {
     // Configura bluetooth e recebe novos dados
     error(WAR_EMPTY_EEPROM);
-    setupBluetooth();
-    getID(gtw);
+    setupBluetooth(ble);
+    getID(ble, gtw);
 
     // Aloca novos dados na EEPROM
     writeEEPROM(gtw->packet.destAddr, chID_addr_min);

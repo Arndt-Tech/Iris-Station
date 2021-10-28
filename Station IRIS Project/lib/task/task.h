@@ -9,6 +9,7 @@
 #include "OLED.h"
 #include "_LoRa.h"
 #include "Peripherals.h"
+#include "GPS.h"
 
 // Definições
 #define CORE(a) (BaseType_t)(a)
@@ -17,6 +18,7 @@
 
 // Struct's externas
 extern networkLora gateway;
+extern GPS gps;
 
 // Funções
 void setupTasks();
@@ -26,5 +28,6 @@ void taskLoRa(void *pvParameters);
 void taskReadData(void *pvParameters);
 void taskOled(void *pvParameters);
 void taskReset(void *pvParameters);
+void taskGPS(void *pvParameters);
 
 #endif

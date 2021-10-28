@@ -13,8 +13,7 @@
 #include "GPS.h"
 
 // Funções
-void configBegin(networkLora *gtw, GPS *gps);
-void setupDataSystem(networkLora *gtw);
-
+void configBegin(networkBluetooth *ble, networkLora *gtw, GPS *gps);
+void setupDataSystem(networkBluetooth *ble, networkLora *gtw);
 
 #endif
