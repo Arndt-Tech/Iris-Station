@@ -9,7 +9,7 @@
 #include "pinout.h"
 #include "errors.h"
 
-/*----------------------------------------------------------------------------------------------*/
+// Definições
 // LoRa Config.
 #define INTERVAL 2000 // 2000 + 205ms para compensar o delay de processamento do Gateway
 #define BAND 433E6    // Frequencia 433MHz
@@ -32,6 +32,8 @@
     Equivalent bitrate -> 366 bytes/s
     Time on air -> 561 ms
 */
+// Macros
+#define SIZE_CORRECTION(a) (size_t)(a)
 
 // Struct's
 typedef struct _lora_aux
@@ -72,5 +74,8 @@ void runningLoRa(networkLora *gtw);
 void send_LoRa_Message(networkLora *gtw);
 err receive_LoRa_Message(networkLora *gtw);
 uint32_t asm_addr(uint8_t *addr);
+void packID(networkLora *gtw);
+void packSensors(networkLora *gtw);
+void packGPS(networkLora *gtw);
 
 #endif

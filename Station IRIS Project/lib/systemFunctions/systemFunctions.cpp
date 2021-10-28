@@ -51,6 +51,7 @@ void setupDataSystem(networkBluetooth *ble, networkLora *gtw)
     // Aloca novos dados na EEPROM
     writeEEPROM(gtw->packet.destAddr, chID_addr_min);
     writeEEPROM(gtw->packet.localAddr, loChID_addr_min);
+    vTaskDelay(1000);
     resetModule();
   }
   else

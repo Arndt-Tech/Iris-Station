@@ -36,6 +36,7 @@
 #define APP_SENDS_PASSWORD "^"
 #define CONNECTION_ERROR "!"
 #define SUCCESSFULLY_CONNECTED "&"
+#define APP_SENDS_DESTADDR "|"
 
 // Struct's
 typedef struct ble

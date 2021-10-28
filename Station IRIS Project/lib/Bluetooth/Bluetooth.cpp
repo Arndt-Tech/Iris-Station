@@ -17,7 +17,7 @@ class CallbackRX : public BLECharacteristicCallbacks
 // Funções
 void setupBluetooth(networkBluetooth *ble)
 {
-  BLEDevice::init("GateIRIS");
+  BLEDevice::init("StationIRIS");
 
   // Cria server
   ble->serverBT = BLEDevice::createServer();
@@ -225,11 +225,11 @@ void bleDisable()
 }
 
 void getID(networkBluetooth *ble , networkLora *gtw)
-{ 
-  writeBT(ble, "|");
+{
+  writeBT(ble, APP_SENDS_DESTADDR);
   gtw->packet.destAddr = atol(getData(ble).c_str());
   gtw->packet.localAddr = atol(writeBT(ble, String(getChipID())).c_str());
   Serial.println("Chip ID: " + String(gtw->packet.localAddr));
   vTaskDelay(1000);
-  writeBT(ble, "&");
+  writeBT(ble, SUCCESSFULLY_CONNECTED);
 }

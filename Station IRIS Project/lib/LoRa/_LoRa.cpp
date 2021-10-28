@@ -19,7 +19,7 @@ void setupLoRa(networkLora *gtw)
   LoRa.enableCrc();
   gtw->signal = -164;
   gtw->received = 0;
-  gtw->valveStatus = 0; 
+  gtw->valveStatus = 0;
 }
 
 void runningLoRa(networkLora *gtw)
@@ -31,40 +31,21 @@ void runningLoRa(networkLora *gtw)
 
 void send_LoRa_Message(networkLora *gtw)
 {
-  gtw->packet.temperature = gtw->packetAux.temperature * 10;
-  gtw->packet.latitude = gtw->packetAux.latitute * -1000000;
-  gtw->packet.longitude = gtw->packetAux.longitude * -1000000;
+  // Ajuste de dados
   gtw->packet.packetLenght = sizeof(gtw->packet);
+  // Inicio do pacote
   LoRa.beginPacket();
-  // Endereço destino
-  LoRa.write(gtw->packet.destAddr);
-  LoRa.write(gtw->packet.destAddr >> 8 & 0xFF);
-  LoRa.write(gtw->packet.destAddr >> 16 & 0xFF);
-  LoRa.write(gtw->packet.destAddr >> 24 & 0xFF);
-  // Endereço local
-  LoRa.write(gtw->packet.localAddr);
-  LoRa.write(gtw->packet.localAddr >> 8 & 0xFF);
-  LoRa.write(gtw->packet.localAddr >> 16 & 0xFF);
-  LoRa.write(gtw->packet.localAddr >> 24 & 0xFF);
-  // Umidade
-  LoRa.write(gtw->packet.humidity);
-  // Temperatura
-  LoRa.write(gtw->packet.temperature);
-  LoRa.write(gtw->packet.temperature >> 8 & 0xFF);
-  // Latitude
-  LoRa.write(gtw->packet.latitude);
-  LoRa.write(gtw->packet.latitude >> 8 & 0xFF);
-  LoRa.write(gtw->packet.latitude >> 16 & 0xFF);
-  LoRa.write(gtw->packet.latitude >> 24 & 0xFF);
-  // Longitude
-  LoRa.write(gtw->packet.longitude);
-  LoRa.write(gtw->packet.longitude >> 8 & 0xFF);
-  LoRa.write(gtw->packet.longitude >> 16 & 0xFF);
-  LoRa.write(gtw->packet.longitude >> 24 & 0xFF);
-  // Tamanho do pacote
+  // Envia ID's
+  packID(gtw);
+  // Envia dados de Sensores
+  packSensors(gtw);
+  // Envia dados de GPS (Se corresponder com tipo de pacote)
+  packGPS(gtw);
+  // Envia tamanho do pacote
   LoRa.write(gtw->packet.packetLenght);
   // Fim do pacote
   LoRa.endPacket();
+  // Flag de requisição zerada
   gtw->received = 0;
 }
 
@@ -101,4 +82,46 @@ uint32_t asm_addr(uint8_t *addr)
   newAddr |= addr[2] << 16;
   newAddr |= addr[3] << 24;
   return newAddr;
+}
+
+void packID(networkLora *gtw)
+{
+  // Endereço destino
+  LoRa.write(gtw->packet.destAddr);
+  LoRa.write(gtw->packet.destAddr >> 8 & 0xFF);
+  LoRa.write(gtw->packet.destAddr >> 16 & 0xFF);
+  LoRa.write(gtw->packet.destAddr >> 24 & 0xFF);
+  // Endereço local
+  LoRa.write(gtw->packet.localAddr);
+  LoRa.write(gtw->packet.localAddr >> 8 & 0xFF);
+  LoRa.write(gtw->packet.localAddr >> 16 & 0xFF);
+  LoRa.write(gtw->packet.localAddr >> 24 & 0xFF);
+}
+
+void packSensors(networkLora *gtw)
+{
+  // Ajuste de dados
+  gtw->packet.temperature = gtw->packetAux.temperature * 10;
+  // Umidade
+  LoRa.write(gtw->packet.humidity);
+  // Temperatura
+  LoRa.write(gtw->packet.temperature);
+  LoRa.write(gtw->packet.temperature >> 8 & 0xFF);
+}
+
+void packGPS(networkLora *gtw)
+{
+  // Ajuste de dados
+  gtw->packet.latitude = gtw->packetAux.latitute * -1000000;
+  gtw->packet.longitude = gtw->packetAux.longitude * -1000000;
+  // Latitude
+  LoRa.write(gtw->packet.latitude);
+  LoRa.write(gtw->packet.latitude >> 8 & 0xFF);
+  LoRa.write(gtw->packet.latitude >> 16 & 0xFF);
+  LoRa.write(gtw->packet.latitude >> 24 & 0xFF);
+  // Longitude
+  LoRa.write(gtw->packet.longitude);
+  LoRa.write(gtw->packet.longitude >> 8 & 0xFF);
+  LoRa.write(gtw->packet.longitude >> 16 & 0xFF);
+  LoRa.write(gtw->packet.longitude >> 24 & 0xFF);
 }
