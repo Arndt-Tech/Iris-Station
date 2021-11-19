@@ -1,23 +1,28 @@
-#ifndef _LORA_H
-#define _LORA_H
+#pragma once
 
-//Inclusões
 #include <Arduino.h>
 #include <FreeRTOS.h>
 #include <SPI.h>
 #include <LoRa.h>
 #include "pinout.h"
 #include "errors.h"
+#include "debug.h"
+#include "specFunctions.h"
 
-// Definições
-// LoRa Config.
-#define INTERVAL 2000 // 2000 + 205ms para compensar o delay de processamento do Gateway
-#define BAND 433E6    // Frequencia 433MHz
+#define INTERVAL 2000
+// LoRa shipping interval
+#define BAND 433E6
+// 433MHz Radio working frequency
 #define SF 12
+//
 #define BW 250E3
+//
 #define CR 4
+//
 #define PL 6
+//
 #define SW 0x16
+//
 /*
   Config:
     Band -> 433MHz
@@ -32,50 +37,80 @@
     Equivalent bitrate -> 366 bytes/s
     Time on air -> 561 ms
 */
-// Macros
+//
 #define SIZE_CORRECTION(a) (size_t)(a)
 
-// Struct's
-typedef struct _lora_aux
+/**
+ * @brief Auxiliary classes.
+ * 
+ */
+namespace aux
 {
-  float temperature;
-  double latitute;
-  double longitude;
-}loraAUX;
+  class loraPackage
+  {
+  private:
+    struct pckg
+    {
+      uint32_t m_localAddr;
+      uint32_t m_destAddr;
+      int16_t m_temperature;
+      uint8_t m_humidity;
+      uint8_t m_packageLen;
+      int32_t m_latitude;
+      int32_t m_longitude;
+    } inThePackage;
 
-typedef struct _package
+  public:
+    loraPackage();
+    uint32_t getLocalAddr() const;
+    uint32_t getDestAddr() const;
+    int16_t getTemperature() const;
+    uint8_t getHumidity() const;
+    uint8_t getPacketLenght() const;
+    int32_t getLatitude() const;
+    int32_t getLongitude() const;
+    void setLocalAddr(uint32_t value);
+    void setDestAddr(uint32_t value);
+    void setTemperature(float value);
+    void setHumidity(uint8_t value);
+    void setLatitude(double value);
+    void setLongitude(double value);
+  };
+}
+
+/**
+ * @brief Communication classes.
+ * 
+ */
+namespace com
 {
-  uint32_t localAddr;
-  uint32_t destAddr;
-  int16_t temperature;
-  uint8_t humidity;
-  uint8_t packetLenght;
-  int32_t latitude;
-  int32_t longitude;
-} loraPackage;
+  /**
+   * @brief Communication class via Lora at the IRIS station.
+   * 
+   */
+  class Lora
+  {
+  private:
+    uint8_t m_received;
+    int16_t m_signal;
+    uint8_t m_valveStatus;
+    uint8_t m_status;
 
-typedef struct _lora
-{
-  // Package
-  loraPackage packet;
-  loraAUX packetAux;
-  // Status
-  uint8_t received;
-  int16_t signal;
-  uint8_t valveStatus;
-} networkLora;
+  public:
+    aux::loraPackage packet;
 
-// Externos
-extern void valve(uint8_t state);
+  private:
+    fle::Failure getPackage();
+    void sendPackage();
+    void packID() const;
+    void packSensors() const;
+    void packGPS() const;
 
-// Funções
-void setupLoRa(networkLora *gtw);
-void runningLoRa(networkLora *gtw);
-void send_LoRa_Message(networkLora *gtw);
-err receive_LoRa_Message(networkLora *gtw);
-uint32_t asm_addr(uint8_t *addr);
-void packID(networkLora *gtw);
-void packSensors(networkLora *gtw);
-void packGPS(networkLora *gtw);
-
-#endif
+  public:
+    void begin();
+    uint8_t getValveStatus() const;
+    void startLoRa();
+    void stopLoRa();
+    void run();
+  };
+}

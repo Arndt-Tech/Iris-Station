@@ -1,13 +1,22 @@
-#ifndef CHIP_ID_H
-#define CHIP_ID_H
+#pragma once
 
-// Inclusões
+// 
 #include <Arduino.h>
 #include <FreeRTOS.h>
 #include "pinout.h"
 #include "errors.h"
+#include "debug.h"
 
-// Funções
-uint32_t getChipID();
+/**
+ * @brief Configuration
+ * 
+ */
+namespace cfg
+{
+  class ChipID
+  {
+    public:
+      static uint32_t get();
+  };
+}
 
-#endif

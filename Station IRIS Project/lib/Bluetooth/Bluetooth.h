@@ -1,5 +1,4 @@
-#ifndef _BLUETOOTH_H
-#define _BLUETOOTH_H
+#pragma once
 
 // Inclusões de bibliotecas
 #include <Arduino.h>
@@ -13,7 +12,7 @@
 #include "esp_bt_main.h"
 #include "pinout.h"
 #include "errors.h"
-#include "task.h"
+#include "debug.h"
 #include "ChipID.h"
 #include "_LoRa.h"
 
@@ -38,47 +37,48 @@
 #define SUCCESSFULLY_CONNECTED "&"
 #define APP_SENDS_DESTADDR "|"
 
-// Struct's
-typedef struct ble
+/**
+ * @brief Communication
+ * 
+ */
+namespace com
 {
-  BLEServer *serverBT = NULL;                  // Aloca server BT
-  BLECharacteristic *characteristic_TX = NULL; // Aloca característica BT_TX
-  BLECharacteristic *characteristic_RX = NULL; // Aloca característica BT_RX
-  uint32_t BT_rxData;                          // Recebimento callback
-  uint8_t connected;                           // Estado de conexão
-  uint8_t repeatDataFilter;
-  String data;
-  esp_bt_controller_status_t status;
-} networkBluetooth;
+  class BLE
+  {
+  private:
+    BLEServer *m_serverBT = NULL;                  // Aloca server BT
+    BLECharacteristic *m_characteristic_TX = NULL; // Aloca característica BT_TX
+    BLECharacteristic *m_characteristic_RX = NULL; // Aloca característica BT_RX
+    uint32_t m_BT_rxData;                          // Recebimento callback
+    uint8_t m_repeatDataFilter;
+    String m_data;
+    esp_bt_controller_status_t m_status;
 
-// Externos
-extern networkBluetooth BLE;
+  protected:
+    void callback();
+    uint8_t m_connected; // Estado de conexão
 
-// Funções
-void setupBluetooth(networkBluetooth *ble);
-void callbackBLE(networkBluetooth *ble);
+  private:
+    // Config
+    void config();
+    // Connect
+    void waiting();     // Aguarda bluetooth conectar
+    void waitingSYNC(); // Aguarda sincronização da comunicação
+    // Request
+    void waitingRequest(); // Aguarda requisição do clientAPP
+    bool getRequest();     // Recebe requisição com callback
+    void sendRequest();    // Envia requisição para clientAPP
 
-// Setup
-void bluetoothConfig(networkBluetooth *ble); // Configura bluetooth
-
-// Duplex
-String getData(networkBluetooth *ble);               // Recebe dados com callback
-String writeBT(networkBluetooth *ble, String dados); // envia dados via bluetooth
-
-// Connect
-void waitingBT(networkBluetooth *ble);           // Aguarda bluetooth conectar
-void waitingSYNC(networkBluetooth *ble);         // Aguarda sincronização da comunicação
-void refreshConnectionBT(networkBluetooth *ble); // Atualiza estado de conexão bluetooth com callback
-
-// Request
-void waitingREQUEST(networkBluetooth *ble); // Aguarda requisição do clientAPP
-bool getRequestBT(networkBluetooth *ble);   // Recebe requisição com callback
-void sendREQUEST(networkBluetooth *ble);    // Envia requisição para clientAPP
-
-// Disable
-void bleDisable();
-
-// Procedures
-void getID(networkBluetooth *ble, networkLora *gtw);
-
-#endif
+  public:
+    void begin();
+    // Communication
+    String getData();
+    String write(String dados);
+    // Refresh
+    void refresh();
+    // Disable
+    void bleDisable();
+    // Procedures
+    void sendID(com::Lora &st);
+  };
+}

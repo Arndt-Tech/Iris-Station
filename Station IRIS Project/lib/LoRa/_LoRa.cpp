@@ -1,15 +1,16 @@
 // Inclusões
 #include "_LoRa.h"
 
-void setupLoRa(networkLora *gtw)
+void com::Lora::begin()
 {
   SPI.begin(SCK, MISO, MOSI, SS);
   LoRa.setPins(SS, RST, DI00);
   if (!LoRa.begin(BAND))
   {
-    error(ERR_INITIALIZING_LORA);
+    err::Error::setError(fle::Failure::ERR_INITIALIZING_LORA);
     while (1)
-      ;
+    {
+    };
   }
   LoRa.setSpreadingFactor(SF);
   //LoRa.setSignalBandwidth(BW);
@@ -17,43 +18,45 @@ void setupLoRa(networkLora *gtw)
   //LoRa.setPreambleLength(PL);
   //LoRa.setSyncWord(SW);
   LoRa.enableCrc();
-  gtw->signal = -164;
-  gtw->received = 0;
-  gtw->valveStatus = 0;
+  m_status = 1;
+  m_signal = -164;
+  m_received = 0;
+  m_valveStatus = 0;
 }
 
-void runningLoRa(networkLora *gtw)
+void com::Lora::run()
 {
-  if (gtw->received)
-    send_LoRa_Message(gtw);
-  error(receive_LoRa_Message(gtw));
+  if (m_status)
+  {
+    if (m_received)
+      sendPackage();
+    err::Error::setError(getPackage());
+  }
 }
 
-void send_LoRa_Message(networkLora *gtw)
+void com::Lora::sendPackage()
 {
-  // Ajuste de dados
-  gtw->packet.packetLenght = sizeof(gtw->packet);
   // Inicio do pacote
   LoRa.beginPacket();
   // Envia ID's
-  packID(gtw);
+  packID();
   // Envia dados de Sensores
-  packSensors(gtw);
+  packSensors();
   // Envia dados de GPS (Se corresponder com tipo de pacote)
-  packGPS(gtw);
+  packGPS();
   // Envia tamanho do pacote
-  LoRa.write(gtw->packet.packetLenght);
+  LoRa.write(packet.getPacketLenght());
   // Fim do pacote
   LoRa.endPacket();
   // Flag de requisição zerada
-  gtw->received = 0;
+  m_received = 0;
 }
 
-err receive_LoRa_Message(networkLora *gtw)
+fle::Failure com::Lora::getPackage()
 {
   uint8_t packSize = LoRa.parsePacket();
   if (packSize == 0)
-    return WAR_NO_LORA_PACKAGES;
+    return fle::Failure::WAR_NO_LORA_PACKAGES;
   uint8_t to_who_addr[4] = {0};
   uint8_t sender_addr[4] = {0};
   uint16_t incomingLength = 0;
@@ -62,66 +65,123 @@ err receive_LoRa_Message(networkLora *gtw)
     to_who_addr[i] = LoRa.read();
   for (register uint8_t i = 0; i < 4; i++)
     sender_addr[i] = LoRa.read();
-  if (asm_addr(to_who_addr) != gtw->packet.localAddr || asm_addr(sender_addr) != gtw->packet.destAddr)
-    return WAR_PACKET_OUT_OF_PROTOCOL;
+  if (spc::SpecialFunctions::asm_addr(to_who_addr) != packet.getLocalAddr() || spc::SpecialFunctions::asm_addr(sender_addr) != packet.getDestAddr())
+#if _DEBUG_MODE_
+  {
+    Serial.println("Pacote ignorado");
+    Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
+    Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
+    return fle::Failure::WAR_UNKNOWN_PACKAGE;
+  }
+#elif !_DEBUG_MODE_
+    return fle::Failure::WAR_UNKNOWN_PACKAGE;
+#endif
   __valveStatus = LoRa.read();
   incomingLength = LoRa.read();
   if (incomingLength != packSize)
-    return ERR_INCONSISTENT_LORA_PACKAGE; // Pacote inconsistente
-  gtw->received = 1;
-  gtw->signal = LoRa.packetRssi();
-  valve(gtw->valveStatus = __valveStatus);
-  return NOT_ERROR;
+#if _DEBUG_MODE_
+  {
+    Serial.println("Pacote inconsistente");
+    Serial.println("Tamanho informado do pacote: " + String(incomingLength));
+    Serial.println("Tamanho esperado do pacote: " + String(packSize));
+    return fle::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
+  }
+#elif !_DEBUG_MODE_
+    return fle::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
+#endif
+  m_received = 1;
+  m_signal = LoRa.packetRssi();
+  m_valveStatus = __valveStatus;
+#if _DEBUG_MODE_
+  Serial.println();
+  Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
+  Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
+  Serial.println("Valvula: " + String(__valveStatus));
+  Serial.println("Tamanho informado do pacote: " + String(incomingLength));
+  Serial.println("Tamanho esperado do pacote: " + String(packSize));
+  Serial.println("Sinal: " + String(m_signal));
+  Serial.println();
+#elif !_DEBUG_MODE_
+#endif
+  return fle::Failure::NO_ERR;
 }
 
-uint32_t asm_addr(uint8_t *addr)
-{
-  uint32_t newAddr = 0;
-  newAddr |= addr[0];
-  newAddr |= addr[1] << 8;
-  newAddr |= addr[2] << 16;
-  newAddr |= addr[3] << 24;
-  return newAddr;
-}
-
-void packID(networkLora *gtw)
+void com::Lora::packID() const
 {
   // Endereço destino
-  LoRa.write(gtw->packet.destAddr);
-  LoRa.write(gtw->packet.destAddr >> 8 & 0xFF);
-  LoRa.write(gtw->packet.destAddr >> 16 & 0xFF);
-  LoRa.write(gtw->packet.destAddr >> 24 & 0xFF);
+  LoRa.write(packet.getDestAddr());
+  LoRa.write(packet.getDestAddr() >> 8 & 0xFF);
+  LoRa.write(packet.getDestAddr() >> 16 & 0xFF);
+  LoRa.write(packet.getDestAddr() >> 24 & 0xFF);
   // Endereço local
-  LoRa.write(gtw->packet.localAddr);
-  LoRa.write(gtw->packet.localAddr >> 8 & 0xFF);
-  LoRa.write(gtw->packet.localAddr >> 16 & 0xFF);
-  LoRa.write(gtw->packet.localAddr >> 24 & 0xFF);
+  LoRa.write(packet.getLocalAddr());
+  LoRa.write(packet.getLocalAddr() >> 8 & 0xFF);
+  LoRa.write(packet.getLocalAddr() >> 16 & 0xFF);
+  LoRa.write(packet.getLocalAddr() >> 24 & 0xFF);
 }
 
-void packSensors(networkLora *gtw)
+void com::Lora::packSensors() const
 {
-  // Ajuste de dados
-  gtw->packet.temperature = gtw->packetAux.temperature * 10;
   // Umidade
-  LoRa.write(gtw->packet.humidity);
+  LoRa.write(packet.getHumidity());
   // Temperatura
-  LoRa.write(gtw->packet.temperature);
-  LoRa.write(gtw->packet.temperature >> 8 & 0xFF);
+  LoRa.write(packet.getHumidity());
+  LoRa.write(packet.getHumidity() >> 8 & 0xFF);
 }
 
-void packGPS(networkLora *gtw)
+void com::Lora::packGPS() const
 {
-  // Ajuste de dados
-  gtw->packet.latitude = gtw->packetAux.latitute * -1000000;
-  gtw->packet.longitude = gtw->packetAux.longitude * -1000000;
   // Latitude
-  LoRa.write(gtw->packet.latitude);
-  LoRa.write(gtw->packet.latitude >> 8 & 0xFF);
-  LoRa.write(gtw->packet.latitude >> 16 & 0xFF);
-  LoRa.write(gtw->packet.latitude >> 24 & 0xFF);
+  LoRa.write(packet.getLatitude());
+  LoRa.write(packet.getLatitude() >> 8 & 0xFF);
+  LoRa.write(packet.getLatitude() >> 16 & 0xFF);
+  LoRa.write(packet.getLatitude() >> 24 & 0xFF);
   // Longitude
-  LoRa.write(gtw->packet.longitude);
-  LoRa.write(gtw->packet.longitude >> 8 & 0xFF);
-  LoRa.write(gtw->packet.longitude >> 16 & 0xFF);
-  LoRa.write(gtw->packet.longitude >> 24 & 0xFF);
+  LoRa.write(packet.getLongitude());
+  LoRa.write(packet.getLongitude() >> 8 & 0xFF);
+  LoRa.write(packet.getLongitude() >> 16 & 0xFF);
+  LoRa.write(packet.getLongitude() >> 24 & 0xFF);
 }
+
+uint8_t com::Lora::getValveStatus() const { return m_valveStatus; }
+
+void com::Lora::startLoRa() { m_status = 1; }
+
+void com::Lora::stopLoRa() { m_status = 0; }
+
+aux::loraPackage::loraPackage()
+{
+  inThePackage.m_destAddr = 0;
+  inThePackage.m_localAddr = 0;
+  inThePackage.m_temperature = 0;
+  inThePackage.m_humidity = 0;
+  inThePackage.m_latitude = 0;
+  inThePackage.m_longitude = 0;
+  inThePackage.m_packageLen = 0;
+}
+
+uint32_t aux::loraPackage::getLocalAddr() const { return inThePackage.m_localAddr; }
+
+uint32_t aux::loraPackage::getDestAddr() const { return inThePackage.m_destAddr; }
+
+int16_t aux::loraPackage::getTemperature() const { return inThePackage.m_temperature; }
+
+uint8_t aux::loraPackage::getHumidity() const { return inThePackage.m_humidity; }
+
+uint8_t aux::loraPackage::getPacketLenght() const { return sizeof(inThePackage); }
+
+int32_t aux::loraPackage::getLatitude() const { return inThePackage.m_latitude; }
+
+int32_t aux::loraPackage::getLongitude() const { return inThePackage.m_longitude; }
+
+void aux::loraPackage::setLocalAddr(uint32_t value) { inThePackage.m_localAddr = value; }
+
+void aux::loraPackage::setDestAddr(uint32_t value) { inThePackage.m_destAddr = value; }
+
+void aux::loraPackage::setTemperature(float value) { inThePackage.m_temperature = value * 1E1; }
+
+void aux::loraPackage::setHumidity(uint8_t value) { inThePackage.m_humidity = value; }
+
+void aux::loraPackage::setLatitude(double value) { inThePackage.m_latitude = value * -1E6; }
+
+void aux::loraPackage::setLongitude(double value) { inThePackage.m_longitude = value * -1E6; }

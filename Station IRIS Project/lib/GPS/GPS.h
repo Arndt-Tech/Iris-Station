@@ -1,23 +1,33 @@
-#ifndef _GPS_H_
-#define _GPS_H_
+#pragma once
 
-// Inclusões
+//
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
+#include "pinout.h"
+#include "errors.h"
+#include "debug.h"
 #include "_LoRa.h"
 
-// Definições
-#define BAUD_RATE 4800
+#define BAUD_RATE 9600
 
-// Struct's
-typedef struct gps
+/**
+ * @brief Peripherals.
+ * 
+ */
+namespace per
 {
-  SoftwareSerial softSerial;
-  TinyGPSPlus data;
-}GPS;
+  /**
+   * @brief GPS Class.
+   * 
+   */
+  class GPS 
+  {
+  private:
+    SoftwareSerial softwareSerial;
+    TinyGPSPlus data;
 
-// Funções
-void setupSoftwareSerial(GPS *gps);
-void locationRead(GPS *gps, networkLora *gtw);
-
-#endif
+  public:
+    void begin();
+    fle::Failure getLocalization(com::Lora &st);
+  };
+}

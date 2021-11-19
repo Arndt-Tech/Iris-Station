@@ -1,13 +1,18 @@
-#ifndef _SPECIALFUNCTIONS_H
-#define _SPECIALFUNCTIONS_H
+#pragma once
 
 // Inclusões
 #include <Arduino.h>
 #include <FreeRTOS.h>
 #include "pinout.h"
 #include "errors.h"
+#include "debug.h"
 
-// Funções
-void IRAM_ATTR resetModule();
-
-#endif
+namespace spc
+{
+  class SpecialFunctions
+  {
+    public:
+      static void IRAM_ATTR resetModule();
+      static uint32_t asm_addr(uint8_t *addr);
+  };
+}

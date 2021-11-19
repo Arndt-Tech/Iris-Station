@@ -1,5 +1,4 @@
-#ifndef _PINOUT_H
-#define _PINOUT_H
+#pragma once
 
 /*|----------| Station Hardware Mapping |----------|*/
 
@@ -30,5 +29,3 @@
 #define SS 18
 #define RST 14
 #define DI00 26
-
-#endif

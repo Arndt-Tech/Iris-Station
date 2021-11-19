@@ -1,21 +1,29 @@
 #include "GPS.h"
 
-void setupSoftwareSerial(GPS *gps) { gps->softSerial.begin(9600, SWSERIAL_8N1, RX_GPS, TX_GPS, false, 256); }
-void locationRead(GPS *gps, networkLora *gtw)
+void per::GPS::begin() { softwareSerial.begin(9600, SWSERIAL_8N1, RX_GPS, TX_GPS, false, 256); }
+
+fle::Failure per::GPS::getLocalization(com::Lora &st)
 {
-  while (gps->softSerial.available() > 0)
-    if (gps->data.encode(gps->softSerial.read()))
+  while (softwareSerial.available() > 0)
+    if (data.encode(softwareSerial.read()))
     {
-      if (gps->data.location.isValid())
+      if (data.location.isValid())
       {
-        gtw->packetAux.latitute = gps->data.location.lat();
-        gtw->packetAux.longitude = gps->data.location.lng();
-        Serial.println("Latitude: " + String(gps->data.location.lat(), 6));
-        Serial.println("Longitude: " + String(gps->data.location.lng(), 6));
+        st.packet.setLatitude(data.location.lat());
+        st.packet.setLongitude(data.location.lng());
       }
       else
-        Serial.println("Localizacao invalida!");
+        return fle::Failure::WAR_INVALID_GPS_LOCATION;
     }
-  if (xTaskGetTickCount() > 5000 && gps->data.charsProcessed() < 10)
-    Serial.println("Erro no GPS, verificar conexao");
+  if (xTaskGetTickCount() > 5000 && data.charsProcessed() < 10)
+#if _DEBUG_MODE_
+  {
+    Serial.println("Erro GPS, dados desconhecidos");
+    return fle::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
+  }
+#elif !_DEBUG_MODE_
+    return fle::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
+#endif
+
+  return fle::Failure::NO_ERR;
 }

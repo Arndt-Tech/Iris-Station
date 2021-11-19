@@ -1,22 +1,28 @@
-// Inclusões
+// 
 #include "task.h"
 
-// Inicialização das tasks
+//
+extern stt::Station iris;
+
+// 
 void setupTasks()
 {
   xTaskCreatePinnedToCore(taskReadData, "taskReadData", STACK(2048), NULL, PRIORITY(5), NULL, CORE(1));
   vTaskDelay(2000);
   xTaskCreatePinnedToCore(taskGPS, "taskGPS", STACK(4096), NULL, PRIORITY(2), NULL, CORE(1));
   xTaskCreatePinnedToCore(taskLoRa, "taskLora", STACK(8192), NULL, PRIORITY(5), NULL, CORE(0));
-  xTaskCreatePinnedToCore(taskOled, "taskOled", STACK(4096), NULL, PRIORITY(3), NULL, CORE(1));
 }
 
-// Tasks
+void setupResetTask(){}
+
+// 
 void taskLoRa(void *pvParameters)
 {
+  iris.manage.LoRa().startLoRa();
   while (1)
   {
-    runningLoRa(&gateway);
+    iris.manage.LoRa().run();
+    iris.manage.GPIO().setValve(iris.manage.LoRa().getValveStatus());
     vTaskDelay(1);
   }
 }
@@ -25,17 +31,7 @@ void taskReadData(void *pvParameters)
 {
   while (1)
   {
-    error(readDHT(&gateway));
-    vTaskDelay(1);
-  }
-}
-
-void taskOled(void *pvParameters)
-{
-  while (1)
-  {
-    dataBar(&gateway, "3", false, true);
-    runnigSystem(&gateway, true, false);
+    iris.manage.Error().setError(iris.manage.GPIO().getDHT(iris.manage.LoRa()));
     vTaskDelay(1);
   }
 }
@@ -44,7 +40,7 @@ void taskReset(void *pvParameters)
 {
   while (1)
   {
-    resetClear();
+    iris.manage.GPIO().checkReset();
     vTaskDelay(1);
   }
 }
@@ -53,7 +49,7 @@ void taskGPS(void *pvParameters)
 {
   while(1)
   {
-    locationRead(&gps, &gateway);
+    iris.manage.GPS().getLocalization(iris.manage.LoRa());
     vTaskDelay(1);
   }
 }
