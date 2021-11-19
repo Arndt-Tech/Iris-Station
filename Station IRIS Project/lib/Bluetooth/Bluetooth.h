@@ -48,15 +48,12 @@ namespace com
   private:
     BLEServer *m_serverBT = NULL;                  // Aloca server BT
     BLECharacteristic *m_characteristic_TX = NULL; // Aloca característica BT_TX
-    BLECharacteristic *m_characteristic_RX = NULL; // Aloca característica BT_RX
+    static BLECharacteristic *m_characteristic_RX; // Aloca característica BT_RX
     uint32_t m_BT_rxData;                          // Recebimento callback
-    uint8_t m_repeatDataFilter;
-    String m_data;
+    static uint8_t m_repeatDataFilter;
+    static String m_data;
     esp_bt_controller_status_t m_status;
-
-  protected:
-    void callback();
-    uint8_t m_connected; // Estado de conexão
+    static uint8_t m_connected; // Estado de conexão
 
   private:
     // Config
@@ -80,5 +77,12 @@ namespace com
     void bleDisable();
     // Procedures
     void sendID(com::Lora &st);
+    // Status
+    uint8_t getConnectionState();
+    // Callback
+    static void callback();
+    // Connection
+    static void setConnectionStatus(uint8_t status);
+    static uint8_t getConnectionStatus();
   };
 }

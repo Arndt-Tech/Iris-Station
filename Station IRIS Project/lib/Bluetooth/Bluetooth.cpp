@@ -1,15 +1,20 @@
 #include "Bluetooth.h"
 
-// Callback's
+BLECharacteristic *com::BLE::m_characteristic_RX = NULL;
+String com::BLE::m_data;
+uint8_t com::BLE::m_repeatDataFilter;
+uint8_t com::BLE::m_connected;
+
+//
 // Estado de conexão bluetooth
-class CallbackServer : public BLEServerCallbacks, com::BLE
+class CallbackServer : public BLEServerCallbacks
 {
-  void onConnect(BLEServer *serverBT) { m_connected = 1; }    // Dispositivo conectado
-  void onDisconnect(BLEServer *serverBT) { m_connected = 0; } // Dispositivo desconectado
+  void onConnect(BLEServer *serverBT) { com::BLE::setConnectionStatus(1); }    // Dispositivo conectado
+  void onDisconnect(BLEServer *serverBT) { com::BLE::setConnectionStatus(0); } // Dispositivo desconectado
 };
 
 // Recebimento de dados bluetooth
-class CallbackRX : public BLECharacteristicCallbacks, com::BLE
+class CallbackRX : public BLECharacteristicCallbacks
 {
   void onWrite(BLECharacteristic *characteristic_TX) { com::BLE::callback(); }
 };
@@ -38,7 +43,6 @@ void com::BLE::callback()
       m_data = auxData;
   }
 }
-
 
 void com::BLE::begin()
 {
@@ -266,3 +270,6 @@ void com::BLE::sendID(com::Lora &st)
   vTaskDelay(1000);
   write(SUCCESSFULLY_CONNECTED);
 }
+
+void com::BLE::setConnectionStatus(uint8_t status) { m_connected = status; }
+uint8_t com::BLE::getConnectionStatus() { return m_connected; }
