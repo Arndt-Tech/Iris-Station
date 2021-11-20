@@ -18,11 +18,9 @@ void setupResetTask(){}
 // 
 void taskLoRa(void *pvParameters)
 {
-  iris.manage.LoRa().startLoRa();
   while (1)
   {
-    iris.manage.LoRa().run();
-    iris.manage.GPIO().setValve(iris.manage.LoRa().getValveStatus());
+    iris.manage.LoRa().operation.duplex();
     vTaskDelay(1);
   }
 }
@@ -31,7 +29,8 @@ void taskReadData(void *pvParameters)
 {
   while (1)
   {
-    iris.manage.Error().setError(iris.manage.GPIO().getDHT(iris.manage.LoRa()));
+    iris.manage.Error().setError(iris.manage.GPIO().weather.readDHT(iris.manage.LoRa()));
+    iris.manage.GPIO().valve.setValve(iris.manage.LoRa().packet.receive.get.valveStatus());
     vTaskDelay(1);
   }
 }
@@ -40,7 +39,7 @@ void taskReset(void *pvParameters)
 {
   while (1)
   {
-    iris.manage.GPIO().checkReset();
+    iris.manage.GPIO().other.checkReset();
     vTaskDelay(1);
   }
 }

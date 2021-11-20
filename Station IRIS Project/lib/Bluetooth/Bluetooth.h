@@ -77,8 +77,6 @@ namespace com
     void bleDisable();
     // Procedures
     void sendID(com::Lora &st);
-    // Status
-    uint8_t getConnectionState();
     // Callback
     static void callback();
     // Connection

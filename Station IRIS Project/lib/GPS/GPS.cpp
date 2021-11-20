@@ -1,29 +1,33 @@
 #include "GPS.h"
 
-void per::GPS::begin() { softwareSerial.begin(9600, SWSERIAL_8N1, RX_GPS, TX_GPS, false, 256); }
+void per::GPS::begin() { m_softwareSerial.begin(9600, SWSERIAL_8N1, RX_GPS, TX_GPS, false, 256); }
 
 fle::Failure per::GPS::getLocalization(com::Lora &st)
 {
-  while (softwareSerial.available() > 0)
-    if (data.encode(softwareSerial.read()))
+  while (m_softwareSerial.available() > 0)
+    if (m_data.encode(m_softwareSerial.read()))
     {
-      if (data.location.isValid())
+      if (m_data.location.isValid())
       {
-        st.packet.setLatitude(data.location.lat());
-        st.packet.setLongitude(data.location.lng());
+        m_lat = m_data.location.lat();
+        m_lon = m_data.location.lng();
+        st.packet.transmit.set.latitude(m_lat);
+        st.packet.transmit.set.longitude(m_lon);
+        m_status = 1;
       }
       else
         return fle::Failure::WAR_INVALID_GPS_LOCATION;
     }
-  if (xTaskGetTickCount() > 5000 && data.charsProcessed() < 10)
-#if _DEBUG_MODE_
+  if (xTaskGetTickCount() > 5000 && m_data.charsProcessed() < 10)
   {
-    Serial.println("Erro GPS, dados desconhecidos");
+    m_status = 0;
     return fle::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
   }
-#elif !_DEBUG_MODE_
-    return fle::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
-#endif
-
   return fle::Failure::NO_ERR;
 }
+
+uint8_t per::GPS::getStatus() { return m_status; }
+
+double per::GPS::getLatitude() { return m_lat; }
+
+double per::GPS::getLongitude() { return m_lon; }

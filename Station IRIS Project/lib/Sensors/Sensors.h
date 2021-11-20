@@ -22,7 +22,7 @@
  * 
  */
 namespace per
-{ 
+{
   /**
    * @brief GPIO Class.
    * 
@@ -30,13 +30,33 @@ namespace per
   class GPIO
   {
   private:
-    bool m_valve_status;
+    static double m_temperature;
+    static double m_humidity;
+    static uint8_t m_valve_status;
+    static uint8_t m_dht_status;
+
+  public:
+    struct snsr
+    {
+      fle::Failure readDHT(com::Lora &st);
+      double getTemperature();
+      double getHumidity();
+      uint8_t status();
+    } weather;
+
+    struct vlv
+    {
+      void setValve(uint8_t status);
+      uint8_t status();
+    } valve;
+
+    struct oth
+    {
+      void checkReset();
+    } other;
 
   public:
     void begin();
-    fle::Failure getDHT(com::Lora &st);
-    void setValve(bool status);
-    void checkReset();
-    bool getValveStatus();
+    void settings();
   };
 }

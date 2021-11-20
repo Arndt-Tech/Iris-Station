@@ -3,7 +3,11 @@
 
 DHT dht(DHTpin, typeDHT);
 
-//
+double per::GPIO::m_temperature = 0;
+double per::GPIO::m_humidity = 0;
+uint8_t per::GPIO::m_valve_status = 0;
+uint8_t per::GPIO::m_dht_status = 0;
+
 void per::GPIO::begin()
 {
   pinMode(pin_resetEEPROM, INPUT);
@@ -13,48 +17,37 @@ void per::GPIO::begin()
   dht.begin();
 }
 
-fle::Failure per::GPIO::getDHT(com::Lora &st)
+fle::Failure per::GPIO::snsr::readDHT(com::Lora &st)
 {
-  float aux_temp = st.packet.getTemperature();
-  uint8_t aux_humidity = st.packet.getHumidity();
+  float aux_temp = st.packet.transmit.get.temperature();
+  uint8_t aux_humidity = st.packet.transmit.get.humidity();
   static unsigned long tempoLeituraDHT = 0;
   if ((xTaskGetTickCount() - tempoLeituraDHT) > readTime)
   {
-    st.packet.setTemperature(dht.readTemperature());
-    st.packet.setHumidity((uint8_t)dht.readHumidity());
+    m_temperature = dht.readTemperature(false);
+    m_humidity = dht.readHumidity();
     tempoLeituraDHT = xTaskGetTickCount();
   }
   if (isnan(aux_humidity) || isnan(aux_temp))
-#if _DEBUG_MODE_
   {
-    Serial.println("Erro ao ler DHT" + String(typeDHT));
-    Serial.println("Temperatura: " + String(st.packet.getTemperature()));
-    Serial.println("Umidade: " + String(st.packet.getHumidity()));
+    m_temperature = aux_temp;
+    m_humidity = aux_humidity;
+    m_dht_status = 0;
     return fle::Failure::ERR_DHT_ISNAN;
   }
-#elif !_DEBUG_MODE_
-  {
-    st.packet.setTemperature(aux_temp);
-    st.packet.setHumidity(aux_humidity);
-    return fle::Failure::ERR_DHT_ISNAN;
-  }
-#endif
-  st.packet.setTemperature(aux_temp);
-  st.packet.setHumidity(aux_humidity);
-#if _DEBUG_MODE_
-  static unsigned long tDebug = 0;
-  if ((xTaskGetTickCount() - tDebug) > readTime)
-  {
-    Serial.println("Temperatura: " + String(st.packet.getTemperature()));
-    Serial.println("Umidade: " + String(st.packet.getHumidity()));
-    tDebug = xTaskGetTickCount();
-  }
-#elif !_DEBUG_MODE_
-#endif
+  m_dht_status = 1;
+  st.packet.transmit.set.temperature(m_temperature);
+  st.packet.transmit.set.humidity((uint8_t)m_humidity);
   return fle::Failure::NO_ERR;
 }
 
-void per::GPIO::setValve(bool status = 0)
+double per::GPIO::snsr::getTemperature() { return m_temperature; }
+
+double per::GPIO::snsr::getHumidity() { return m_humidity; }
+
+uint8_t per::GPIO::snsr::status() { return m_dht_status; }
+
+void per::GPIO::vlv::setValve(uint8_t status = 0)
 {
   m_valve_status = status;
   if (m_valve_status)
@@ -69,7 +62,9 @@ void per::GPIO::setValve(bool status = 0)
   }
 }
 
-void per::GPIO::checkReset()
+uint8_t per::GPIO::vlv::status() { return (digitalRead(valvePin1) && !digitalRead(valvePin2)) == true ? true : false; }
+
+void per::GPIO::oth::checkReset()
 {
   uint16_t counter = 0;
   while (digitalRead(pin_resetEEPROM))
@@ -87,5 +82,3 @@ void per::GPIO::checkReset()
     }
   }
 }
-
-bool per::GPIO::getValveStatus() { return m_valve_status; }

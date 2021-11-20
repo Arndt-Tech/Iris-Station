@@ -261,15 +261,12 @@ void com::BLE::bleDisable()
 void com::BLE::sendID(com::Lora &st)
 {
   write(APP_SENDS_DESTADDR);
-  st.packet.setDestAddr(atol(getData().c_str()));
-  st.packet.setLocalAddr(atol(write(String(cfg::ChipID::get())).c_str()));
-#if _DEBUG_MODE_
-  Serial.println("Chip ID: " + String(st.packet.getLocalAddr()));
-#elif !_DEBUG_MODE_
-#endif
+  st.packet.transmit.set.senderAddr(atol(getData().c_str()));
+  st.packet.transmit.set.localAddr(atol(write(String(cfg::ChipID::get())).c_str()));
   vTaskDelay(1000);
   write(SUCCESSFULLY_CONNECTED);
 }
 
 void com::BLE::setConnectionStatus(uint8_t status) { m_connected = status; }
+
 uint8_t com::BLE::getConnectionStatus() { return m_connected; }

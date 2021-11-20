@@ -17,14 +17,14 @@ void stt::Station::begin()
   // Inicialização do sistema GPS
   m_gps.begin();
   // Verificação dos dados do sistema
-  checkSystem(m_lora);
+  checkSystem();
   // Inicialização da comunicação LoRa
   m_lora.begin();
   // Configuração geral completa
   err::Error::setError(fle::Failure::INIT_OK);
 }
 
-fle::Failure stt::Station::checkSystem(com::Lora &st)
+fle::Failure stt::Station::checkSystem()
 {
   // Verifica EEPROM
   if (!cfg::Log::check(loChID_addr_min) || !cfg::Log::check(chID_addr_min))
@@ -35,11 +35,11 @@ fle::Failure stt::Station::checkSystem(com::Lora &st)
 #endif
     err::Error::setError(fle::Failure::WAR_EMPTY_EEPROM);
     m_ble.begin();
-    m_ble.sendID(st);
+    m_ble.sendID(m_lora);
 
     // Aloca novos dados na EEPROM
-    cfg::Log::write(st.packet.getDestAddr(), chID_addr_min);
-    cfg::Log::write(st.packet.getLocalAddr(), loChID_addr_min);
+    cfg::Log::write(m_lora.packet.transmit.get.senderAddr(), chID_addr_min);
+    cfg::Log::write(m_lora.packet.transmit.get.localAddr(), loChID_addr_min);
     vTaskDelay(1000);
     spc::SpecialFunctions::resetModule();
   }
@@ -47,8 +47,9 @@ fle::Failure stt::Station::checkSystem(com::Lora &st)
   Serial.println("EEPROM Com dados");
 #elif _DEBUG_MODE_
 #endif
-  st.packet.setDestAddr(cfg::Log::read(chID_addr_min));
-  st.packet.setLocalAddr(cfg::Log::read(loChID_addr_min));
+  
+  m_lora.packet.transmit.set.senderAddr(cfg::Log::read(chID_addr_min));
+  m_lora.packet.transmit.set.localAddr(cfg::Log::read(loChID_addr_min));
   return fle::Failure::NO_ERR;
 }
 
