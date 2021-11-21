@@ -32,7 +32,7 @@ namespace stt
     static per::GPIO m_gpio;
 
   private:
-    fle::Failure checkSystem();
+    err::Error::err_::Failure checkSystem();
 
   public:
     struct mng

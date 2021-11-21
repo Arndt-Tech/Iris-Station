@@ -21,10 +21,10 @@ void stt::Station::begin()
   // Inicialização da comunicação LoRa
   m_lora.begin();
   // Configuração geral completa
-  err::Error::setError(fle::Failure::INIT_OK);
+  err::Error::setError(err::Error::err_::Failure::INIT_OK);
 }
 
-fle::Failure stt::Station::checkSystem()
+err::Error::err_::Failure stt::Station::checkSystem()
 {
   // Verifica EEPROM
   if (!cfg::Log::check(loChID_addr_min) || !cfg::Log::check(chID_addr_min))
@@ -33,7 +33,7 @@ fle::Failure stt::Station::checkSystem()
     Serial.println("EEPROM Vazia");
 #elif _DEBUG_MODE_
 #endif
-    err::Error::setError(fle::Failure::WAR_EMPTY_EEPROM);
+    err::Error::setError(err::Error::err_::Failure::WAR_EMPTY_EEPROM);
     m_ble.begin();
     m_ble.sendID(m_lora);
 
@@ -50,7 +50,7 @@ fle::Failure stt::Station::checkSystem()
   
   m_lora.packet.transmit.set.senderAddr(cfg::Log::read(chID_addr_min));
   m_lora.packet.transmit.set.localAddr(cfg::Log::read(loChID_addr_min));
-  return fle::Failure::NO_ERR;
+  return err::Error::err_::Failure::NO_ERR;
 }
 
 err::Error &stt::Station::mng::Error() { return m_err; }

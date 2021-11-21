@@ -34,14 +34,16 @@ namespace per
     static double m_humidity;
     static uint8_t m_valve_status;
     static uint8_t m_dht_status;
+    static uint8_t m_temperature_unit;
 
   public:
     struct snsr
     {
-      fle::Failure readDHT(com::Lora &st);
+      err::Error::err_::Failure readDHT(com::Lora &st);
       double getTemperature();
       double getHumidity();
       uint8_t status();
+      void setUnit(bool unit);
     } weather;
 
     struct vlv
@@ -57,6 +59,5 @@ namespace per
 
   public:
     void begin();
-    void settings();
   };
 }

@@ -5,26 +5,26 @@ DHT dht(DHTpin, typeDHT);
 
 double per::GPIO::m_temperature = 0;
 double per::GPIO::m_humidity = 0;
-uint8_t per::GPIO::m_valve_status = 0;
-uint8_t per::GPIO::m_dht_status = 0;
+uint8_t per::GPIO::m_valve_status = false;
+uint8_t per::GPIO::m_dht_status = false;
+uint8_t per::GPIO::m_temperature_unit = false;
 
 void per::GPIO::begin()
 {
   pinMode(pin_resetEEPROM, INPUT);
   pinMode(valvePin1, OUTPUT);
   pinMode(valvePin2, OUTPUT);
-  m_valve_status = false;
   dht.begin();
 }
 
-fle::Failure per::GPIO::snsr::readDHT(com::Lora &st)
+err::Error::err_::Failure per::GPIO::snsr::readDHT(com::Lora &st)
 {
   float aux_temp = st.packet.transmit.get.temperature();
   uint8_t aux_humidity = st.packet.transmit.get.humidity();
   static unsigned long tempoLeituraDHT = 0;
   if ((xTaskGetTickCount() - tempoLeituraDHT) > readTime)
   {
-    m_temperature = dht.readTemperature(false);
+    m_temperature = dht.readTemperature(m_temperature_unit);
     m_humidity = dht.readHumidity();
     tempoLeituraDHT = xTaskGetTickCount();
   }
@@ -33,12 +33,12 @@ fle::Failure per::GPIO::snsr::readDHT(com::Lora &st)
     m_temperature = aux_temp;
     m_humidity = aux_humidity;
     m_dht_status = 0;
-    return fle::Failure::ERR_DHT_ISNAN;
+    return err::Error::err_::Failure::ERR_DHT_ISNAN;
   }
   m_dht_status = 1;
   st.packet.transmit.set.temperature(m_temperature);
   st.packet.transmit.set.humidity((uint8_t)m_humidity);
-  return fle::Failure::NO_ERR;
+  return err::Error::err_::Failure::NO_ERR;
 }
 
 double per::GPIO::snsr::getTemperature() { return m_temperature; }
@@ -46,6 +46,8 @@ double per::GPIO::snsr::getTemperature() { return m_temperature; }
 double per::GPIO::snsr::getHumidity() { return m_humidity; }
 
 uint8_t per::GPIO::snsr::status() { return m_dht_status; }
+
+void per::GPIO::snsr::setUnit(bool unit) { m_temperature_unit = unit; }
 
 void per::GPIO::vlv::setValve(uint8_t status = 0)
 {

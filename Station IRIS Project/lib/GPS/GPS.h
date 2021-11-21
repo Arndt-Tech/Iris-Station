@@ -31,7 +31,7 @@ namespace per
 
   public:
     void begin();
-    fle::Failure getLocalization(com::Lora &st);
+    err::Error::err_::Failure getLocalization(com::Lora &st);
     uint8_t getStatus();
     double getLatitude();
     double getLongitude();

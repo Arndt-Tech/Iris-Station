@@ -2,7 +2,7 @@
 
 void per::GPS::begin() { m_softwareSerial.begin(9600, SWSERIAL_8N1, RX_GPS, TX_GPS, false, 256); }
 
-fle::Failure per::GPS::getLocalization(com::Lora &st)
+err::Error::err_::Failure per::GPS::getLocalization(com::Lora &st)
 {
   while (m_softwareSerial.available() > 0)
     if (m_data.encode(m_softwareSerial.read()))
@@ -16,14 +16,14 @@ fle::Failure per::GPS::getLocalization(com::Lora &st)
         m_status = 1;
       }
       else
-        return fle::Failure::WAR_INVALID_GPS_LOCATION;
+        return err::Error::err_::Failure::WAR_INVALID_GPS_LOCATION;
     }
   if (xTaskGetTickCount() > 5000 && m_data.charsProcessed() < 10)
   {
     m_status = 0;
-    return fle::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
+    return err::Error::err_::Failure::ERR_UNKNOWN_GPS_FUNCTIONING;
   }
-  return fle::Failure::NO_ERR;
+  return err::Error::err_::Failure::NO_ERR;
 }
 
 uint8_t per::GPS::getStatus() { return m_status; }

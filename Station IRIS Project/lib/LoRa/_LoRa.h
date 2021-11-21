@@ -145,7 +145,7 @@ namespace com
     static aux::loraPackage packet;
     struct opr
     {
-      static fle::Failure readPackage();
+      static err::Error::err_::Failure readPackage();
       static void sendPackage();
       static void duplex();
     } operation;

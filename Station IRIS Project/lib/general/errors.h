@@ -8,65 +8,65 @@
 
 //
 #define buzzChannel(a) (uint8_t)(a)
-
 /**
- * @brief Failure enumeration.
- * 
- */
-namespace fle
-{
-  /**
-   * @brief Fault enumeration class.
-   * 
-   */
-  enum class Failure
-  {
-    // Inicialization OK.
-    INIT_OK = 1,
-
-    // No mistakes.
-    NO_ERR = 2,
-
-    // Unidentified DHT sensor.
-    ERR_DHT_ISNAN = 10,
-
-    // Invalid location
-    WAR_INVALID_GPS_LOCATION = 11,
-
-    // No data received from GPS
-    ERR_UNKNOWN_GPS_FUNCTIONING = 12,
-
-    // Error initializing LoRa.
-    ERR_INITIALIZING_LORA = 20,
-
-    // Unidentified DHT sensor.
-    WAR_NO_LORA_PACKAGES = 21,
-
-    // Unknown package.
-    WAR_UNKNOWN_PACKAGE = 22,
-
-    // Inconsistent package.
-    ERR_INCONSISTENT_LORA_PACKAGE = 23,
-
-    // Empty EEPROM
-    WAR_EMPTY_EEPROM = 30,
-  };
-}
-
-/**
- * @brief Errors
+ * @brief Error namespace.
  * 
  */
 namespace err
 {
+  /**
+   * @brief Error class.
+   * 
+   */
   class Error
   {
+  public:
+    /**
+    * @brief  Failure enumerations.
+    */
+    struct err_
+    {
+      enum Failure
+      {
+        // Inicialization OK.
+        INIT_OK = +1001,
+
+        // No mistakes.
+        NO_ERR = -1100,
+
+        // Empty EEPROM
+        WAR_EMPTY_EEPROM = +1211,
+
+        // Unidentified DHT sensor.
+        ERR_DHT_ISNAN = +2002,
+
+        // Invalid location
+        WAR_INVALID_GPS_LOCATION = +3000,
+
+        // No data received from GPS
+        ERR_UNKNOWN_GPS_FUNCTIONING = -3100,
+
+        // Error initializing LoRa.
+        ERR_INITIALIZING_LORA = +4012,
+
+        // No Lora Packages
+        WAR_NO_LORA_PACKAGES = -4100,
+
+        // Unknown package.
+        WAR_UNKNOWN_PACKAGE = -4200,
+
+        // Inconsistent package.
+        ERR_INCONSISTENT_LORA_PACKAGE = +4320,
+      };
+    } errors;
+
   private:
-    static void long_bip();
-    static void short_bip();
+    static uint8_t decode(uint16_t __err, uint8_t place);
+    static void long_bip(uint8_t amount);
+    static void short_bip(uint8_t amount);
 
   public:
     void begin();
-    static fle::Failure setError(fle::Failure error);
+    static err::Error::err_::Failure setError(err::Error::err_::Failure error);
   };
 }

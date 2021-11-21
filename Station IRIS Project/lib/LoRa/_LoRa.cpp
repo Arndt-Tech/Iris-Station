@@ -13,7 +13,7 @@ void com::Lora::begin()
   LoRa.setPins(SS, RST, DI00);
   if (!LoRa.begin(BAND))
   {
-    err::Error::setError(fle::Failure::ERR_INITIALIZING_LORA);
+    err::Error::setError(err::Error::err_::Failure::ERR_INITIALIZING_LORA);
     while (1)
     {
     };
@@ -52,11 +52,11 @@ void com::Lora::opr::sendPackage()
   m_received = 0;
 }
 
-fle::Failure com::Lora::opr::readPackage()
+err::Error::err_::Failure com::Lora::opr::readPackage()
 {
   uint8_t packSize = LoRa.parsePacket();
   if (packSize == 0)
-    return fle::Failure::WAR_NO_LORA_PACKAGES;
+    return err::Error::err_::Failure::WAR_NO_LORA_PACKAGES;
   uint8_t to_who_addr[4] = {0};
   uint8_t sender_addr[4] = {0};
   uint16_t incomingLength = 0;
@@ -71,10 +71,10 @@ fle::Failure com::Lora::opr::readPackage()
     Serial.println("Pacote ignorado");
     Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
     Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
-    return fle::Failure::WAR_UNKNOWN_PACKAGE;
+    return err::Error::err_::Failure::WAR_UNKNOWN_PACKAGE;
   }
 #elif !_DEBUG_MODE_
-    return fle::Failure::WAR_UNKNOWN_PACKAGE;
+    return err::Error::err_::Failure::WAR_UNKNOWN_PACKAGE;
 #endif
   __valveStatus = LoRa.read();
   incomingLength = LoRa.read();
@@ -84,10 +84,10 @@ fle::Failure com::Lora::opr::readPackage()
     Serial.println("Pacote inconsistente");
     Serial.println("Tamanho informado do pacote: " + String(incomingLength));
     Serial.println("Tamanho esperado do pacote: " + String(packSize));
-    return fle::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
+    return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
   }
 #elif !_DEBUG_MODE_
-    return fle::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
+    return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
 #endif
   packet.rec.inThePackage.m_receiverAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
   packet.rec.inThePackage.m_senderAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
@@ -105,7 +105,7 @@ fle::Failure com::Lora::opr::readPackage()
   Serial.println();
 #elif !_DEBUG_MODE_
 #endif
-  return fle::Failure::NO_ERR;
+  return err::Error::err_::Failure::NO_ERR;
 }
 
 void com::Lora::packID()
