@@ -7,6 +7,10 @@ LoRaClass com::Lora::m_settings;
 aux::loraPackage::trns aux::loraPackage::send;
 aux::loraPackage::rcpt aux::loraPackage::rec;
 
+/**
+ * @brief Initialize LoRa communication.
+ * 
+ */
 void com::Lora::begin()
 {
   SPI.begin(SCK, MISO, MOSI, SS);
@@ -27,6 +31,10 @@ void com::Lora::begin()
   m_received = 0;
 }
 
+/**
+ * @brief LoRa duplex communication operation.
+ * 
+ */
 void com::Lora::opr::duplex()
 {
   if (m_received)
@@ -34,6 +42,10 @@ void com::Lora::opr::duplex()
   err::Error::setError(com::Lora::opr::readPackage());
 }
 
+/**
+ * @brief Send LoRa packages.
+ * 
+ */
 void com::Lora::opr::sendPackage()
 {
   // Inicio do pacote
@@ -52,6 +64,11 @@ void com::Lora::opr::sendPackage()
   m_received = 0;
 }
 
+/**
+ * @brief Reads LoRa packages.
+ * 
+ * @return Operation success.
+ */
 err::Error::err_::Failure com::Lora::opr::readPackage()
 {
   uint8_t packSize = LoRa.parsePacket();
@@ -68,7 +85,7 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
   if (spc::SpecialFunctions::asm_addr(to_who_addr) != packet.transmit.get.localAddr() || spc::SpecialFunctions::asm_addr(sender_addr) != packet.transmit.get.senderAddr())
 #if _DEBUG_MODE_
   {
-    Serial.println("Pacote ignorado");
+    Serial.println("ERRO LORA - Pacote ignorado");
     Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
     Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
     return err::Error::err_::Failure::WAR_UNKNOWN_PACKAGE;
@@ -81,7 +98,7 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
   if (incomingLength != packSize)
 #if _DEBUG_MODE_
   {
-    Serial.println("Pacote inconsistente");
+    Serial.println("ERRO LORA - Pacote inconsistente");
     Serial.println("Tamanho informado do pacote: " + String(incomingLength));
     Serial.println("Tamanho esperado do pacote: " + String(packSize));
     return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
@@ -93,18 +110,8 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
   packet.rec.inThePackage.m_senderAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
   packet.rec.inThePackage.m_signal = LoRa.packetRssi();
   packet.rec.inThePackage.m_valveStatus = __valveStatus;
+  packet.rec.inThePackage.m_size = incomingLength;
   m_received = 1;
-#if _DEBUG_MODE_
-  Serial.println();
-  Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
-  Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
-  Serial.println("Valvula: " + String(__valveStatus));
-  Serial.println("Tamanho informado do pacote: " + String(incomingLength));
-  Serial.println("Tamanho esperado do pacote: " + String(packSize));
-  Serial.println("Sinal: " + String(packet.rec.inThePackage.m_signal));
-  Serial.println();
-#elif !_DEBUG_MODE_
-#endif
   return err::Error::err_::Failure::NO_ERR;
 }
 
@@ -145,8 +152,16 @@ void com::Lora::packGPS()
   LoRa.write(packet.transmit.get.longitude() >> 24 & 0xFF);
 }
 
+/**
+ * @brief Advanced Settings.
+ */
 LoRaClass &com::Lora::advancedSettings() { return m_settings; }
 
+/**
+ * @brief Get request status from gateway.
+ * 
+ * @return Request status.
+ */
 uint8_t com::Lora::checkRequest() { return m_received; }
 
 aux::loraPackage::loraPackage()
@@ -165,38 +180,92 @@ aux::loraPackage::loraPackage()
   rec.inThePackage.m_size = 0;
 }
 
+/**
+ * @brief Get local address.
+ */
 uint32_t aux::loraPackage::trnsf::gt::localAddr() const { return send.inThePackage.m_localAddr; }
 
+/**
+ * @brief Get sender address.
+ */
 uint32_t aux::loraPackage::trnsf::gt::senderAddr() const { return send.inThePackage.m_senderAddr; }
 
+/**
+ * @brief Get temperature.
+ */
 int16_t aux::loraPackage::trnsf::gt::temperature() const { return send.inThePackage.m_temperature; }
 
+/**
+ * @brief Get humidity.
+ */
 uint8_t aux::loraPackage::trnsf::gt::humidity() const { return send.inThePackage.m_humidity; }
 
+/**
+ * @brief Get the last package size.
+ */
 uint8_t aux::loraPackage::trnsf::gt::size() const { return sizeof(send.inThePackage); }
 
+/**
+ * @brief Get latitude.
+ */
 int32_t aux::loraPackage::trnsf::gt::latitude() const { return send.inThePackage.m_latitude; }
 
+/**
+ * @brief Get longitude.
+ */
 int32_t aux::loraPackage::trnsf::gt::longitude() const { return send.inThePackage.m_longitude; }
 
+/**
+ * @brief Set local address.
+ */
 void aux::loraPackage::trnsf::st::localAddr(uint32_t value) { send.inThePackage.m_localAddr = value; }
 
+/**
+ * @brief Set sender address.
+ */
 void aux::loraPackage::trnsf::st::senderAddr(uint32_t value) { send.inThePackage.m_senderAddr = value; }
 
+/**
+ * @brief Set temperature.
+ */
 void aux::loraPackage::trnsf::st::temperature(float value) { send.inThePackage.m_temperature = value * 1E1; }
 
+/**
+ * @brief Set humidity.
+ */
 void aux::loraPackage::trnsf::st::humidity(uint8_t value) { send.inThePackage.m_humidity = value; }
 
+/**
+ * @brief Set latitude.
+ */
 void aux::loraPackage::trnsf::st::latitude(double value) { send.inThePackage.m_latitude = value * -1E6; }
 
+/**
+ * @brief Set longitude.
+ */
 void aux::loraPackage::trnsf::st::longitude(double value) { send.inThePackage.m_longitude = value * -1E6; }
 
+/**
+ * @brief Get the last address from the receiver. 
+ */
 uint32_t aux::loraPackage::rcptf::gt::receiverAddr() const { return rec.inThePackage.m_receiverAddr; }
 
+/**
+ * @brief Get the last sender's address.
+ */
 uint32_t aux::loraPackage::rcptf::gt::senderAddr() const { return rec.inThePackage.m_senderAddr; }
 
+/**
+ * @brief Get the last status of the valve.
+ */
 uint8_t aux::loraPackage::rcptf::gt::valveStatus() const { return rec.inThePackage.m_valveStatus; }
 
+/**
+ * @brief Get the sign from the last package.
+ */
 int16_t aux::loraPackage::rcptf::gt::signal() const { return rec.inThePackage.m_signal; }
 
+/**
+ * @brief Get the latest package size.
+ */
 uint8_t aux::loraPackage::rcptf::gt::size() const { return rec.inThePackage.m_size; }

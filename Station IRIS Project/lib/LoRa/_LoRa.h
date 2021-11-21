@@ -41,11 +41,21 @@
 #define SIZE_CORRECTION(a) (size_t)(a)
 
 /**
+ * @brief Communication classes.
+ * 
+ */
+namespace com
+{
+  class Lora;
+}
+/**
  * @brief Auxiliary classes.
  * 
  */
-namespace com{ class Lora; }
-namespace aux{ class loraPackage; }
+namespace aux
+{
+  class loraPackage;
+}
 
 namespace aux
 {
@@ -83,6 +93,9 @@ namespace aux
 
   public:
     loraPackage();
+    /**
+     * @brief Transmission package.
+     */
     struct trnsf
     {
       struct gt
@@ -106,6 +119,9 @@ namespace aux
       } set;
     } transmit;
 
+    /**
+     * @brief Reception package.
+     */
     struct rcptf
     {
       struct gt
@@ -120,10 +136,6 @@ namespace aux
   };
 }
 
-/**
- * @brief Communication classes.
- * 
- */
 namespace com
 {
   /**
@@ -143,6 +155,10 @@ namespace com
 
   public:
     static aux::loraPackage packet;
+    /**
+     * @brief Operations structure 
+     * 
+     */
     struct opr
     {
       static err::Error::err_::Failure readPackage();

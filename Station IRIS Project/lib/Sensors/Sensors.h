@@ -15,7 +15,7 @@
 // Definições
 #define readTime 2000
 #define typeDHT DHT11
-#define resetTmrOF 5
+#define resetTmrOF 4
 
 /**
  * @brief Peripherals.

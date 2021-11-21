@@ -1,9 +1,16 @@
-// Inclusões
+//
 #include "specFunctions.h"
 
-// Funções
+/**
+ * @brief Reset device.
+ */
 void spc::SpecialFunctions::resetModule() { esp_restart(); } // Reinicia dispositivo
 
+/**
+ * @brief Address assembly.
+ * 
+ * @param addr Address. 
+ */
 uint32_t spc::SpecialFunctions::asm_addr(uint8_t *addr)
 {
   uint32_t newAddr = 0;

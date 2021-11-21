@@ -66,11 +66,11 @@ void loop()
   Serial.println("IRIS -> LoRa -> Reception package");
   Serial.write('\n');
   Serial.print("Request: "); Serial.println(iris.manage.LoRa().checkRequest() == true ? "Yes." : "No.");
-  Serial.println("Receiver: " + String(iris.manage.LoRa().packet.receive.get.receiverAddr()));
-  Serial.println("Sender: " + String(iris.manage.LoRa().packet.receive.get.senderAddr()));
-  Serial.print("Valve Status: "); Serial.println(iris.manage.LoRa().packet.receive.get.valveStatus() == true ? "Activate." : "Disable.");
-  Serial.println("Package Size: " + String(iris.manage.LoRa().packet.receive.get.size()) + " bytes.");
-  Serial.println("Signal: " + String(iris.manage.LoRa().packet.receive.get.signal()) + " dBm.");
+  Serial.println("Last receiver: " + String(iris.manage.LoRa().packet.receive.get.receiverAddr()));
+  Serial.println("Last sender: " + String(iris.manage.LoRa().packet.receive.get.senderAddr()));
+  Serial.print("Last valve status: "); Serial.println(iris.manage.LoRa().packet.receive.get.valveStatus() == true ? "Activate." : "Disable.");
+  Serial.println("Last package size: " + String(iris.manage.LoRa().packet.receive.get.size()) + " bytes.");
+  Serial.println("Last signal: " + String(iris.manage.LoRa().packet.receive.get.signal()) + " dBm.");
   Serial.write('\n');
   Serial.println("------------------------------------------------------------");
   Serial.write('\n');

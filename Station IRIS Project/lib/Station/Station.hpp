@@ -35,6 +35,9 @@ namespace stt
     err::Error::err_::Failure checkSystem();
 
   public:
+    /**
+    * @brief Manage station.
+    */
     struct mng
     {
       err::Error &Error();

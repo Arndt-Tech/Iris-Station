@@ -35,7 +35,5 @@ namespace per
     uint8_t getStatus();
     double getLatitude();
     double getLongitude();
-
-  
   };
 }

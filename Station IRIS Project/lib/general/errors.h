@@ -1,6 +1,20 @@
 #pragma once
+/*
+* Areas 1-System.   2-GPIO.   3-GPS.   4-LoRa.
+* 
+* Order From right to left 
+* 
+* First The first represents the amount of short beeps.
+* 
+* Second The second represents the amount of long beeps.
+* 
+* Third The third represents the sub-error area.
+* 
+* Fourth The fourth represents the error area. 
+* 
+* Signal The signal indicates if the error will beep ('+' = beep) ('-' = No beep). 
+*/
 
-//
 #include <Arduino.h>
 #include <FreeRTOS.h>
 #include "pinout.h"
@@ -9,7 +23,7 @@
 //
 #define buzzChannel(a) (uint8_t)(a)
 /**
- * @brief Error namespace.
+ * @brief Error classes.
  * 
  */
 namespace err
@@ -35,16 +49,16 @@ namespace err
         NO_ERR = -1100,
 
         // Empty EEPROM
-        WAR_EMPTY_EEPROM = +1211,
+        ERR_EMPTY_EEPROM = +1211,
 
         // Unidentified DHT sensor.
         ERR_DHT_ISNAN = +2002,
 
         // Invalid location
-        WAR_INVALID_GPS_LOCATION = +3000,
+        ERR_INVALID_GPS_LOCATION = +3000,
 
         // No data received from GPS
-        ERR_UNKNOWN_GPS_FUNCTIONING = -3100,
+        WAR_UNKNOWN_GPS_FUNCTIONING = -3100,
 
         // Error initializing LoRa.
         ERR_INITIALIZING_LORA = +4012,

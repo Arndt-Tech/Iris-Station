@@ -46,41 +46,34 @@ namespace com
   class BLE
   {
   private:
-    BLEServer *m_serverBT = NULL;                  // Aloca server BT
-    BLECharacteristic *m_characteristic_TX = NULL; // Aloca característica BT_TX
-    static BLECharacteristic *m_characteristic_RX; // Aloca característica BT_RX
-    uint32_t m_BT_rxData;                          // Recebimento callback
+    BLEServer *m_serverBT = NULL;                  
+    BLECharacteristic *m_characteristic_TX = NULL; 
+    static BLECharacteristic *m_characteristic_RX; 
+    uint32_t m_BT_rxData;                          
     static uint8_t m_repeatDataFilter;
     static String m_data;
     esp_bt_controller_status_t m_status;
-    static uint8_t m_connected; // Estado de conexão
+    static uint8_t m_connected; 
+
+  protected:
+    static void callback();
+    static void setConnectionStatus(uint8_t status);
 
   private:
-    // Config
-    void config();
-    // Connect
-    void waiting();     // Aguarda bluetooth conectar
-    void waitingSYNC(); // Aguarda sincronização da comunicação
-    // Request
-    void waitingRequest(); // Aguarda requisição do clientAPP
-    bool getRequest();     // Recebe requisição com callback
-    void sendRequest();    // Envia requisição para clientAPP
+    void config(com::Lora &st);
+    void waiting();     
+    void waitingSYNC();
+    void waitingRequest(); 
+    bool getRequest();     
+    void sendRequest();    
+    void sendID(com::Lora &st);
 
   public:
-    void begin();
-    // Communication
-    String getData();
-    String write(String dados);
-    // Refresh
+    void begin(com::Lora &st);
+    String read();
+    String write(String data);
     void refresh();
-    // Disable
-    void bleDisable();
-    // Procedures
-    void sendID(com::Lora &st);
-    // Callback
-    static void callback();
-    // Connection
-    static void setConnectionStatus(uint8_t status);
+    void disable();
     static uint8_t getConnectionStatus();
   };
 }
