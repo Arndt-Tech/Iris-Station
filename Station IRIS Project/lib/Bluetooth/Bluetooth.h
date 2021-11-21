@@ -75,5 +75,6 @@ namespace com
     void refresh();
     void disable();
     static uint8_t getConnectionStatus();
+    esp_bt_controller_status_t getStatus();
   };
 }

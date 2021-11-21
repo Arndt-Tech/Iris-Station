@@ -78,7 +78,7 @@ void loop()
   Serial.write('\n');
   Serial.write('\n');
   Serial.write('\n');
-  delay(5000);
+  delay(2000);
 #elif !_DEBUG_MODE_
 #endif
 }

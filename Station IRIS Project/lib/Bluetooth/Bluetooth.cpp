@@ -347,3 +347,10 @@ void com::BLE::setConnectionStatus(uint8_t status) { m_connected = status; }
  * @return Connection status. 
  */
 uint8_t com::BLE::getConnectionStatus() { return m_connected; }
+
+/**
+ * @brief Get controller status.
+ * 
+ * @return Controller status. 
+ */
+esp_bt_controller_status_t com::BLE::getStatus() { return m_status; }
