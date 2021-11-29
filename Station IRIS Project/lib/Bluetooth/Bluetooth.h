@@ -37,6 +37,7 @@
 #define SUCCESSFULLY_CONNECTED "&"
 #define APP_SENDS_DESTADDR "|"
 
+
 /**
  * @brief Communication
  * 
@@ -46,14 +47,14 @@ namespace com
   class BLE
   {
   private:
-    BLEServer *m_serverBT = NULL;                  
-    BLECharacteristic *m_characteristic_TX = NULL; 
-    static BLECharacteristic *m_characteristic_RX; 
-    uint32_t m_BT_rxData;                          
+    BLEServer *m_serverBT = NULL;
+    BLECharacteristic *m_characteristic_TX = NULL;
+    static BLECharacteristic *m_characteristic_RX;
+    uint32_t m_BT_rxData;
     static uint8_t m_repeatDataFilter;
     static String m_data;
     esp_bt_controller_status_t m_status;
-    static uint8_t m_connected; 
+    static uint8_t m_connected;
 
   protected:
     static void callback();
@@ -61,11 +62,11 @@ namespace com
 
   private:
     void config(com::Lora &st);
-    void waiting();     
+    void waiting();
     void waitingSYNC();
-    void waitingRequest(); 
-    bool getRequest();     
-    void sendRequest();    
+    void waitingRequest();
+    bool getRequest();
+    void sendRequest();
     void sendID(com::Lora &st);
 
   public:

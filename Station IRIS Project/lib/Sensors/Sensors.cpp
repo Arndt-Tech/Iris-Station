@@ -30,8 +30,8 @@ err::Error::err_::Failure per::GPIO::snsr::readDHT(com::Lora &st)
 {
   float aux_temp = st.packet.transmit.get.temperature();
   uint8_t aux_humidity = st.packet.transmit.get.humidity();
-  static unsigned long tempoLeituraDHT = 0;
-  if ((xTaskGetTickCount() - tempoLeituraDHT) > readTime)
+  static TickType_t tempoLeituraDHT = 0;
+  if ((spc::SpecialFunctions::ctrlTickCount(xTaskGetTickCount(), tempoLeituraDHT)) >= readTime)
   {
     m_temperature = dht.readTemperature(m_temperature_unit);
     m_humidity = dht.readHumidity();

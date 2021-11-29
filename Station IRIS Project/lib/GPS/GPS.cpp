@@ -28,9 +28,11 @@ err::Error::err_::Failure per::GPS::getLocalization(com::Lora &st)
       else
         return err::Error::err_::Failure::ERR_INVALID_GPS_LOCATION;
     }
-  if (xTaskGetTickCount() > 5000 && m_data.charsProcessed() < 10)
+  static TickType_t t;
+  if (spc::SpecialFunctions::ctrlTickCount(xTaskGetTickCount(), t) >= 5000 && m_data.charsProcessed() < 10)
   {
     m_status = 0;
+    t = xTaskGetTickCount();
     return err::Error::err_::Failure::WAR_UNKNOWN_GPS_FUNCTIONING;
   }
   return err::Error::err_::Failure::NO_ERR;

@@ -93,7 +93,7 @@ void com::BLE::begin(com::Lora &st)
   BLEDevice::startAdvertising();
 
   // Enables filter against data repetition.
-  m_repeatDataFilter = 1; 
+  m_repeatDataFilter = 1;
 
   config(st);
 }
@@ -123,10 +123,10 @@ void com::BLE::waiting()
  * @brief Wait sync.
  * 
  */
-void com::BLE::waitingSYNC() 
+void com::BLE::waitingSYNC()
 {
   // Disable data filter
-  m_repeatDataFilter = 0; 
+  m_repeatDataFilter = 0;
 #if _DEBUG_MODE_
   Serial.println("Waiting for synchronization.");
 #elif !_DEBUG_MODE_
@@ -141,14 +141,14 @@ void com::BLE::waitingSYNC()
 #elif !_DEBUG_MODE_
 #endif
   // Enable data filter
-  m_repeatDataFilter = 1; 
+  m_repeatDataFilter = 1;
 }
 
 /**
  * @brief Waiting for app request.
  * 
  */
-void com::BLE::waitingRequest() 
+void com::BLE::waitingRequest()
 {
 #if _DEBUG_MODE_
   Serial.println("Waiting for request.");
@@ -171,13 +171,13 @@ void com::BLE::waitingRequest()
  * @brief Send app request.
  * 
  */
-void com::BLE::sendRequest() 
+void com::BLE::sendRequest()
 {
 #if _DEBUG_MODE_
   Serial.println("Sending request...");
 #elif !_DEBUG_MODE_
 #endif
-  m_data = ""; 
+  m_data = "";
   write(passwordClientAppBT);
 #if _DEBUG_MODE_
   Serial.println("Request sent!");
@@ -193,10 +193,10 @@ void com::BLE::sendRequest()
  */
 String com::BLE::write(String data)
 {
-  unsigned long timeBT = 0;
+  TickType_t timeBT = 0;
   if (m_connected)
   {
-    if ((xTaskGetTickCount() - timeBT) > 4)
+    if ((spc::SpecialFunctions::ctrlTickCount(xTaskGetTickCount(), timeBT)) > 4)
     {
       m_characteristic_TX->setValue(data.c_str());
       m_characteristic_TX->notify();
@@ -213,7 +213,7 @@ String com::BLE::write(String data)
  * 
  * @return Bluetooth data. 
  */
-String com::BLE::read() 
+String com::BLE::read()
 {
   m_data = "";
   while (1)
@@ -261,7 +261,7 @@ bool com::BLE::getRequest()
 void com::BLE::refresh()
 {
   static uint8_t oldDeviceConnected = 1;
-  if (!m_connected && oldDeviceConnected) 
+  if (!m_connected && oldDeviceConnected)
   {
 #if _DEBUG_MODE_
     Serial.println("Bluetooth disconnected!");
@@ -272,7 +272,7 @@ void com::BLE::refresh()
     m_serverBT->startAdvertising();
     oldDeviceConnected = m_connected;
   }
-  if (m_connected && !oldDeviceConnected) 
+  if (m_connected && !oldDeviceConnected)
   {
 #if _DEBUG_MODE_
     Serial.println("Bluetooth reconnected!");

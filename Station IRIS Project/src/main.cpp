@@ -19,7 +19,7 @@ void setup()
   iris.begin();
   setupTasks();
 }
-void loop()
+void loop() 
 {
 
 #if _DEBUG_MODE_

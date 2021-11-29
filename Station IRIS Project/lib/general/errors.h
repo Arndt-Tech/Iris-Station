@@ -55,7 +55,7 @@ namespace err
         ERR_DHT_ISNAN = +2002,
 
         // Invalid location
-        ERR_INVALID_GPS_LOCATION = +3000,
+        ERR_INVALID_GPS_LOCATION = +3013,
 
         // No data received from GPS
         WAR_UNKNOWN_GPS_FUNCTIONING = -3100,
@@ -75,7 +75,6 @@ namespace err
     } errors;
 
   private:
-    static uint8_t decode(uint16_t __err, uint8_t place);
     static void long_bip(uint8_t amount);
     static void short_bip(uint8_t amount);
 

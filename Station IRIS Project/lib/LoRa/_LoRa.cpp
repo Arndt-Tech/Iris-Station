@@ -83,29 +83,11 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
   for (register uint8_t i = 0; i < 4; i++)
     sender_addr[i] = LoRa.read();
   if (spc::SpecialFunctions::asm_addr(to_who_addr) != packet.transmit.get.localAddr() || spc::SpecialFunctions::asm_addr(sender_addr) != packet.transmit.get.senderAddr())
-#if _DEBUG_MODE_
-  {
-    Serial.println("ERRO LORA - Pacote ignorado");
-    Serial.println("Endereco destino: " + String(spc::SpecialFunctions::asm_addr(to_who_addr)));
-    Serial.println("Endereco remetente: " + String(spc::SpecialFunctions::asm_addr(sender_addr)));
     return err::Error::err_::Failure::WAR_UNKNOWN_PACKAGE;
-  }
-#elif !_DEBUG_MODE_
-    return err::Error::err_::Failure::WAR_UNKNOWN_PACKAGE;
-#endif
   __valveStatus = LoRa.read();
   incomingLength = LoRa.read();
   if (incomingLength != packSize)
-#if _DEBUG_MODE_
-  {
-    Serial.println("ERRO LORA - Pacote inconsistente");
-    Serial.println("Tamanho informado do pacote: " + String(incomingLength));
-    Serial.println("Tamanho esperado do pacote: " + String(packSize));
     return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
-  }
-#elif !_DEBUG_MODE_
-    return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
-#endif
   packet.rec.inThePackage.m_receiverAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
   packet.rec.inThePackage.m_senderAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
   packet.rec.inThePackage.m_signal = LoRa.packetRssi();
@@ -117,12 +99,10 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
 
 void com::Lora::packID()
 {
-  // Endereço destino
   LoRa.write(packet.transmit.get.senderAddr());
   LoRa.write(packet.transmit.get.senderAddr() >> 8 & 0xFF);
   LoRa.write(packet.transmit.get.senderAddr() >> 16 & 0xFF);
   LoRa.write(packet.transmit.get.senderAddr() >> 24 & 0xFF);
-  // Endereço local
   LoRa.write(packet.transmit.get.localAddr());
   LoRa.write(packet.transmit.get.localAddr() >> 8 & 0xFF);
   LoRa.write(packet.transmit.get.localAddr() >> 16 & 0xFF);
@@ -131,21 +111,17 @@ void com::Lora::packID()
 
 void com::Lora::packSensors()
 {
-  // Umidade
   LoRa.write(packet.transmit.get.humidity());
-  // Temperatura
   LoRa.write(packet.transmit.get.humidity());
   LoRa.write(packet.transmit.get.humidity() >> 8 & 0xFF);
 }
 
 void com::Lora::packGPS()
 {
-  // Latitude
   LoRa.write(packet.transmit.get.latitude());
   LoRa.write(packet.transmit.get.latitude() >> 8 & 0xFF);
   LoRa.write(packet.transmit.get.latitude() >> 16 & 0xFF);
   LoRa.write(packet.transmit.get.latitude() >> 24 & 0xFF);
-  // Longitude
   LoRa.write(packet.transmit.get.longitude());
   LoRa.write(packet.transmit.get.longitude() >> 8 & 0xFF);
   LoRa.write(packet.transmit.get.longitude() >> 16 & 0xFF);
