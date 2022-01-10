@@ -56,6 +56,7 @@ void loop()
   Serial.write('\n');
   Serial.println("Receiver: " + String(iris.manage.LoRa().packet.transmit.get.senderAddr()));
   Serial.println("Sender: " + String(iris.manage.LoRa().packet.transmit.get.localAddr()));
+  Serial.println("Valve status: " + String(iris.manage.LoRa().packet.transmit.get.valve()));
   Serial.println("Temperature to send: " + String(iris.manage.LoRa().packet.transmit.get.temperature()));
   Serial.println("Humidity to send: " + String(iris.manage.LoRa().packet.transmit.get.humidity()));
   Serial.println("Latitude to send: " + String(iris.manage.LoRa().packet.transmit.get.latitude()));

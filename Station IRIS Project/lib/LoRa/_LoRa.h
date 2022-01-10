@@ -75,6 +75,7 @@ namespace aux
         uint8_t m_size;
         int32_t m_latitude;
         int32_t m_longitude;
+        uint8_t m_valveStatus;
       } inThePackage;
     } static send;
 
@@ -107,12 +108,13 @@ namespace aux
         uint8_t size() const;
         int32_t latitude() const;
         int32_t longitude() const;
+        uint8_t valve() const;
       } get;
       struct st
       {
         void localAddr(uint32_t value);
         void senderAddr(uint32_t value);
-        void temperature(float value);
+        void temperature(double value);
         void humidity(uint8_t value);
         void latitude(double value);
         void longitude(double value);

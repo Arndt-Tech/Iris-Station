@@ -330,8 +330,9 @@ void com::BLE::sendID(com::Lora &st)
   write(APP_SENDS_DESTADDR);
   st.packet.transmit.set.senderAddr(atol(read().c_str()));
   st.packet.transmit.set.localAddr(atol(write(String(cfg::ChipID::get())).c_str()));
-  vTaskDelay(1000);
+  vTaskDelay(3000);
   write(SUCCESSFULLY_CONNECTED);
+  Serial.println("Sucess");
 }
 
 /**

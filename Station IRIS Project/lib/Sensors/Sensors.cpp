@@ -28,25 +28,27 @@ void per::GPIO::begin()
  */
 err::Error::err_::Failure per::GPIO::snsr::readDHT(com::Lora &st)
 {
-  float aux_temp = st.packet.transmit.get.temperature();
-  uint8_t aux_humidity = st.packet.transmit.get.humidity();
+  float aux_temp = m_temperature;
+  uint8_t aux_humidity = m_humidity;
   static TickType_t tempoLeituraDHT = 0;
   if ((spc::SpecialFunctions::ctrlTickCount(xTaskGetTickCount(), tempoLeituraDHT)) >= readTime)
   {
     m_temperature = dht.readTemperature(m_temperature_unit);
     m_humidity = dht.readHumidity();
     tempoLeituraDHT = xTaskGetTickCount();
+    if (isnan(m_temperature) || isnan(m_humidity))
+    {
+      m_temperature = aux_temp;
+      m_humidity = aux_humidity;
+      m_dht_status = 0;
+      return err::Error::err_::Failure::NO_ERR;
+      //return err::Error::err_::Failure::ERR_DHT_ISNAN;
+    }
+
+    m_dht_status = 1;
+    st.packet.transmit.set.temperature(m_temperature);
+    st.packet.transmit.set.humidity((uint8_t)m_humidity);
   }
-  if (isnan(aux_humidity) || isnan(aux_temp))
-  {
-    m_temperature = aux_temp;
-    m_humidity = aux_humidity;
-    m_dht_status = 0;
-    return err::Error::err_::Failure::ERR_DHT_ISNAN;
-  }
-  m_dht_status = 1;
-  st.packet.transmit.set.temperature(m_temperature);
-  st.packet.transmit.set.humidity((uint8_t)m_humidity);
   return err::Error::err_::Failure::NO_ERR;
 }
 

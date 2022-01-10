@@ -52,7 +52,7 @@ namespace err
         ERR_EMPTY_EEPROM = +1211,
 
         // Unidentified DHT sensor.
-        ERR_DHT_ISNAN = +2002,
+        ERR_DHT_ISNAN = +2021,
 
         // Invalid location
         ERR_INVALID_GPS_LOCATION = +3013,

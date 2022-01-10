@@ -18,9 +18,10 @@ void com::Lora::begin()
   if (!LoRa.begin(BAND))
   {
     err::Error::setError(err::Error::err_::Failure::ERR_INITIALIZING_LORA);
-    while (1)
+    while (!LoRa.begin(BAND))
     {
-    };
+      vTaskDelay(500);
+    }
   }
   LoRa.setSpreadingFactor(SF);
   //LoRa.setSignalBandwidth(BW);
@@ -89,7 +90,7 @@ err::Error::err_::Failure com::Lora::opr::readPackage()
   if (incomingLength != packSize)
     return err::Error::err_::Failure::ERR_INCONSISTENT_LORA_PACKAGE;
   packet.rec.inThePackage.m_receiverAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
-  packet.rec.inThePackage.m_senderAddr = spc::SpecialFunctions::asm_addr(to_who_addr);
+  packet.rec.inThePackage.m_senderAddr = spc::SpecialFunctions::asm_addr(sender_addr);
   packet.rec.inThePackage.m_signal = LoRa.packetRssi();
   packet.rec.inThePackage.m_valveStatus = __valveStatus;
   packet.rec.inThePackage.m_size = incomingLength;
@@ -112,8 +113,9 @@ void com::Lora::packID()
 void com::Lora::packSensors()
 {
   LoRa.write(packet.transmit.get.humidity());
-  LoRa.write(packet.transmit.get.humidity());
-  LoRa.write(packet.transmit.get.humidity() >> 8 & 0xFF);
+  LoRa.write(packet.transmit.get.temperature());
+  LoRa.write(packet.transmit.get.temperature() >> 8 & 0xFF);
+  LoRa.write(packet.transmit.get.valve());
 }
 
 void com::Lora::packGPS()
@@ -179,7 +181,7 @@ uint8_t aux::loraPackage::trnsf::gt::humidity() const { return send.inThePackage
 /**
  * @brief Get the last package size.
  */
-uint8_t aux::loraPackage::trnsf::gt::size() const { return sizeof(send.inThePackage); }
+uint8_t aux::loraPackage::trnsf::gt::size() const { return sizeof(send.inThePackage) - SIZE_CORRECTION(3); }
 
 /**
  * @brief Get latitude.
@@ -190,6 +192,11 @@ int32_t aux::loraPackage::trnsf::gt::latitude() const { return send.inThePackage
  * @brief Get longitude.
  */
 int32_t aux::loraPackage::trnsf::gt::longitude() const { return send.inThePackage.m_longitude; }
+
+/**
+ * @brief Get valve status. 
+ */
+uint8_t aux::loraPackage::trnsf::gt::valve() const { return send.inThePackage.m_valveStatus = (digitalRead(valvePin1) && !digitalRead(valvePin2)) == true ? true : false; }
 
 /**
  * @brief Set local address.
@@ -204,7 +211,7 @@ void aux::loraPackage::trnsf::st::senderAddr(uint32_t value) { send.inThePackage
 /**
  * @brief Set temperature.
  */
-void aux::loraPackage::trnsf::st::temperature(float value) { send.inThePackage.m_temperature = value * 1E1; }
+void aux::loraPackage::trnsf::st::temperature(double value) { send.inThePackage.m_temperature = value * 1E1; }
 
 /**
  * @brief Set humidity.

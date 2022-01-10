@@ -13,7 +13,7 @@
 #include "_LoRa.h"
 
 // Definições
-#define readTime 2000
+#define readTime 10000
 #define typeDHT DHT11
 #define resetTmrOF 4
 
@@ -49,7 +49,7 @@ namespace per
     struct vlv
     {
       void setValve(uint8_t status);
-      uint8_t status();
+      static uint8_t status();
     } valve;
 
     struct oth
