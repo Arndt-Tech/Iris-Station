@@ -1,12 +1,13 @@
 # Estação IRIS
 Estação de controle de irrigação remota através de protocolo de comunicação LoRa.
+
 -------------------------------------------------------------------------------
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-### Gateway Iris -> [GateIRIS](https://github.com/SI-ART/GateIRIS).
-### IRIS Station  -> [IRIS Station](https://github.com/SI-ART/Station-IRIS).
+### [IRIS Gateway](https://github.com/SI-ART/GateIRIS).
+### [IRIS Station](https://github.com/I-grow/Station_IRIS).
 
 ### Desenvolvedor -> [Daniel Arndt](https://github.com/DanielArndt0).
+-------------------------------------------------------------------------------
+
 
 ## BLUETOOTH LOW ENERGY
 A configuração inicial da Estação *IRIS* é feita através do protocolo *Bluetooth Low Energy* (BLE), um protocolo de comunicação sem fio, caracterizado pelo seu baixo consumo de energia. Nesta etapa, a *IRIS* precisa receber e enviar as seguintes informações para ser conectada: 
